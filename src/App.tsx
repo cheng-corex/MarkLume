@@ -134,7 +134,8 @@ function AppInner() {
   const handleOpenFile = useCallback(
     async (targetPath?: string) => {
       try {
-        const filePath = targetPath || (await pickMarkdownFile());
+        // 防止 onClick 把事件对象传进来
+        const filePath = (typeof targetPath === "string" ? targetPath : undefined) || (await pickMarkdownFile());
         if (!filePath) return;
 
         const content = await readFile(filePath);
