@@ -10,6 +10,7 @@ import {
   type FolderFile,
 } from "./services/fileService";
 import { extractHeadings } from "./services/markdownRenderer";
+import { invoke } from "@tauri-apps/api/core";
 import "./styles/global.css";
 
 function AppInner() {
@@ -22,21 +23,41 @@ function AppInner() {
 
   // 启动时恢复上次文件夹和文件
   useEffect(() => {
-    if (settings.lastOpenedFolder) {
-      scanFolder(settings.lastOpenedFolder)
-        .then((files) => {
-          setFolderFiles(files);
-          if (settings.lastOpenedFile) {
-            const exists = files.some((f) => f.path === settings.lastOpenedFile);
-            if (exists) {
-              readFile(settings.lastOpenedFile!)
-                .then((content) => setFile(content))
-                .catch(() => { });
-            }
+    // 1. 恢复上次打开的文件夹
+    const restoreLastFolder = async () => {
+      if (!settings.lastOpenedFolder) return;
+      try {
+        const files = await scanFolder(settings.lastOpenedFolder);
+        setFolderFiles(files);
+        if (settings.lastOpenedFile) {
+          const exists = files.some((f) => f.path === settings.lastOpenedFile);
+          if (exists) {
+            const content = await readFile(settings.lastOpenedFile!);
+            setFile(content);
+            return;
           }
-        })
-        .catch(() => { });
-    }
+        }
+      } catch {
+        // 文件夹可能已被删除
+      }
+    };
+
+    // 2. 检查是通过文件关联启动的（双击 .md 文件打开）
+    const checkInitialFile = async () => {
+      try {
+        const initialPath = await invoke<string | null>("get_initial_file");
+        if (initialPath) {
+          const content = await readFile(initialPath);
+          setFile(content);
+          addRecentFile(initialPath, content.name);
+        }
+      } catch {
+        // 忽略
+      }
+    };
+
+    restoreLastFolder();
+    checkInitialFile();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
