@@ -36,22 +36,17 @@ function Toolbar({
     <header className="toolbar">
       <div className="toolbar-left">
         <span className="app-title">MarkLume</span>
-        <button className="tb-toggle-btn" onClick={onToggleSidebar} title={sidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}>
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            {sidebarCollapsed ? (
-              <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            ) : (
-              <path d="M10 3l-5 5 5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            )}
+        <span className="tb-separator" />
+        <button className="tb-toggle-btn" onClick={onToggleSidebar} title={sidebarCollapsed ? "显示侧边栏 (Ctrl+B)" : "隐藏侧边栏 (Ctrl+B)"}>
+          <svg width="18" height="14" viewBox="0 0 22 16" fill="none">
+            <rect x="0.5" y="0.5" width="21" height="15" rx="1.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+            {!sidebarCollapsed && <line x1="6" y1="0.5" x2="6" y2="15.5" stroke="currentColor" strokeWidth="1.2"/>}
           </svg>
         </button>
-        <button className="tb-toggle-btn" onClick={onToggleOutline} title={outlineCollapsed ? "展开大纲" : "收起大纲"}>
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            {outlineCollapsed ? (
-              <path d="M10 3l-5 5 5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            ) : (
-              <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            )}
+        <button className="tb-toggle-btn" onClick={onToggleOutline} title={outlineCollapsed ? "显示大纲" : "隐藏大纲"}>
+          <svg width="18" height="14" viewBox="0 0 22 16" fill="none">
+            <rect x="0.5" y="0.5" width="21" height="15" rx="1.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+            {!outlineCollapsed && <line x1="16" y1="0.5" x2="16" y2="15.5" stroke="currentColor" strokeWidth="1.2"/>}
           </svg>
         </button>
       </div>

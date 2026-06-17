@@ -467,20 +467,27 @@ body {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 26px;
+	width: 30px;
 	height: 26px;
 	border: none;
-	border-radius: 4px;
+	border-radius: 3px;
 	background: transparent;
 	color: var(--text-muted);
 	cursor: pointer;
 	transition: background 0.15s, color 0.15s;
-	margin-left: 2px;
 }
 
 .tb-toggle-btn:hover {
 	background: var(--bg-hover);
 	color: var(--text-primary);
+}
+
+.tb-separator {
+	width: 1px;
+	height: 20px;
+	background: var(--border-color);
+	margin: 0 6px;
+	flex-shrink: 0;
 }
 
 .outline-section-title {
