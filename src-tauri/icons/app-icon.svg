@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4a90d9"/>
+      <stop offset="100%" stop-color="#357abd"/>
+    </linearGradient>
+  </defs>
+  <!-- 背景圆角矩形 -->
+  <rect width="1024" height="1024" rx="192" fill="url(#bg)"/>
+  <!-- Markdown 文档图标 -->
+  <g transform="translate(212, 160)">
+    <!-- 文档主体 -->
+    <rect x="0" y="0" width="600" height="704" rx="48" fill="white" opacity="0.95"/>
+    <!-- 文档折角 -->
+    <path d="M450 0 L450 176 L600 176 Z" fill="#e8e8e8"/>
+    <path d="M450 0 L600 176" stroke="#d0d0d0" stroke-width="2"/>
+    <!-- 标题线 -->
+    <rect x="80" y="240" width="320" height="32" rx="16" fill="#4a90d9" opacity="0.8"/>
+    <rect x="80" y="300" width="200" height="32" rx="16" fill="#4a90d9" opacity="0.5"/>
+    <!-- 正文线 -->
+    <rect x="80" y="380" width="440" height="20" rx="10" fill="#c0c0c0"/>
+    <rect x="80" y="420" width="420" height="20" rx="10" fill="#c0c0c0"/>
+    <rect x="80" y="460" width="380" height="20" rx="10" fill="#c0c0c0"/>
+    <rect x="80" y="500" width="440" height="20" rx="10" fill="#c0c0c0"/>
+    <!-- 代码块 -->
+    <rect x="80" y="550" width="440" height="110" rx="12" fill="#f0f0f0" stroke="#e0e0e0" stroke-width="2"/>
+    <rect x="100" y="570" width="200" height="14" rx="7" fill="#d0d0d0"/>
+    <rect x="100" y="598" width="300" height="14" rx="7" fill="#d0d0d0"/>
+    <rect x="100" y="626" width="250" height="14" rx="7" fill="#d0d0d0"/>
+  </g>
+</svg>

@@ -1,0 +1,142 @@
+/* ===== Settings Panel ===== */
+
+.settings-overlay {
+	position: fixed;
+	inset: 0;
+	background: var(--overlay-bg);
+	z-index: 100;
+}
+
+.settings-panel {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: var(--panel-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 12px;
+	box-shadow: var(--panel-shadow);
+	width: 320px;
+	max-height: 80vh;
+	overflow-y: auto;
+	z-index: 101;
+	padding: 20px 24px;
+}
+
+.settings-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.settings-title {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--text-primary);
+}
+
+.settings-close {
+	background: none;
+	border: none;
+	color: var(--text-secondary);
+	cursor: pointer;
+	padding: 4px;
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.settings-close:hover {
+	background: var(--bg-hover);
+	color: var(--text-primary);
+}
+
+.settings-section {
+	margin-bottom: 20px;
+}
+
+.settings-label {
+	display: block;
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--text-secondary);
+	margin-bottom: 8px;
+}
+
+/* 主题按钮组 */
+.theme-options {
+	display: flex;
+	gap: 8px;
+}
+
+.theme-btn {
+	flex: 1;
+	padding: 6px 12px;
+	font-size: 13px;
+	border: 1px solid var(--border-color);
+	border-radius: 6px;
+	background: var(--btn-bg);
+	color: var(--text-primary);
+	cursor: pointer;
+	transition: all 0.15s ease;
+}
+
+.theme-btn:hover {
+	background: var(--btn-hover);
+}
+
+.theme-btn.active {
+	background: var(--accent-color);
+	color: #ffffff;
+	border-color: var(--accent-color);
+}
+
+/* 滑块 */
+.slider-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.slider-min,
+.slider-max {
+	font-size: 12px;
+	color: var(--text-muted);
+	min-width: 24px;
+	text-align: center;
+}
+
+.settings-slider {
+	flex: 1;
+	height: 4px;
+	-webkit-appearance: none;
+	appearance: none;
+	background: var(--border-color);
+	border-radius: 2px;
+	outline: none;
+	cursor: pointer;
+}
+
+.settings-slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--accent-color);
+	border: 2px solid var(--panel-bg);
+	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+	cursor: pointer;
+}
+
+.settings-slider::-moz-range-thumb {
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--accent-color);
+	border: 2px solid var(--panel-bg);
+	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+	cursor: pointer;
+}

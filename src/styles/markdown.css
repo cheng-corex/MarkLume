@@ -1,0 +1,219 @@
+/* ===== Markdown 阅读样式 ===== */
+
+.markdown-content {
+  line-height: 1.75;
+  font-size: 15px;
+  color: var(--text-primary);
+  word-wrap: break-word;
+}
+
+/* 标题 */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+.markdown-content h1 { font-size: 1.8em; border-bottom: 1px solid var(--border-color); padding-bottom: 0.3em; }
+.markdown-content h2 { font-size: 1.5em; border-bottom: 1px solid var(--border-color); padding-bottom: 0.25em; }
+.markdown-content h3 { font-size: 1.25em; }
+.markdown-content h4 { font-size: 1.1em; }
+.markdown-content h5 { font-size: 1em; }
+.markdown-content h6 { font-size: 0.9em; color: var(--text-secondary); }
+
+/* 段落 */
+.markdown-content p {
+  margin: 0.75em 0;
+}
+
+/* 链接 */
+.markdown-content a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
+/* 列表 */
+.markdown-content ul,
+.markdown-content ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.markdown-content li {
+  margin: 0.25em 0;
+}
+
+.markdown-content li > ul,
+.markdown-content li > ol {
+  margin: 0;
+}
+
+/* 引用 */
+.markdown-content blockquote {
+  margin: 0.75em 0;
+  padding: 0.5em 1em;
+  border-left: 4px solid var(--accent-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+.markdown-content blockquote p {
+  margin: 0.25em 0;
+}
+
+/* 代码块 (highlight.js) */
+.markdown-content pre {
+  margin: 0.75em 0;
+  border-radius: 8px;
+  overflow-x: auto;
+  position: relative;
+}
+
+.markdown-content pre code {
+  display: block;
+  padding: 1em;
+  font-family: "SF Mono", "Fira Code", "Consolas", "Monaco", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  background: #f6f8fa;
+  border-radius: 8px;
+}
+
+/* 行内代码 */
+.markdown-content code {
+  font-family: "SF Mono", "Fira Code", "Consolas", "Monaco", monospace;
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
+.markdown-content pre code {
+  padding: 1em;
+  background: #f6f8fa;
+}
+
+/* 表格 */
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75em 0;
+  font-size: 0.95em;
+}
+
+.markdown-content th,
+.markdown-content td {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.markdown-content th {
+  background: var(--bg-secondary);
+  font-weight: 600;
+}
+
+.markdown-content tr:nth-child(even) {
+  background: var(--bg-sidebar);
+}
+
+/* 图片 */
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 0.5em 0;
+}
+
+/* 分割线 */
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 1.5em 0;
+}
+
+/* 任务列表 */
+.markdown-content input[type="checkbox"] {
+  margin-right: 0.3em;
+}
+
+/* 键盘标记 */
+.markdown-content kbd {
+  padding: 0.2em 0.4em;
+  font-size: 0.85em;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+/* ===== highlight.js 亮色主题覆盖 ===== */
+.hljs {
+  background: #f6f8fa !important;
+  color: #24292e;
+}
+
+.hljs-keyword { color: #d73a49; }
+.hljs-string { color: #032f62; }
+.hljs-number { color: #005cc5; }
+.hljs-comment { color: #6a737d; font-style: italic; }
+.hljs-function { color: #6f42c1; }
+.hljs-title { color: #6f42c1; }
+.hljs-built_in { color: #005cc5; }
+.hljs-type { color: #005cc5; }
+.hljs-literal { color: #005cc5; }
+.hljs-attr { color: #22863a; }
+.hljs-selector-tag { color: #22863a; }
+.hljs-selector-class { color: #6f42c1; }
+.hljs-selector-id { color: #005cc5; }
+.hljs-meta { color: #6a737d; }
+.hljs-variable { color: #e36209; }
+.hljs-params { color: #24292e; }
+.hljs-bullet { color: #005cc5; }
+.hljs-link { color: #005cc5; text-decoration: underline; }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: bold; }
+
+/* ===== 暗色主题 highlight.js 覆盖 ===== */
+[data-theme="dark"] .hljs {
+  background: #1e1e1e !important;
+  color: #d4d4d4;
+}
+[data-theme="dark"] .hljs-keyword { color: #569cd6; }
+[data-theme="dark"] .hljs-string { color: #ce9178; }
+[data-theme="dark"] .hljs-number { color: #b5cea8; }
+[data-theme="dark"] .hljs-comment { color: #6a9955; font-style: italic; }
+[data-theme="dark"] .hljs-function { color: #dcdcaa; }
+[data-theme="dark"] .hljs-title { color: #dcdcaa; }
+[data-theme="dark"] .hljs-built_in { color: #4ec9b0; }
+[data-theme="dark"] .hljs-type { color: #4ec9b0; }
+[data-theme="dark"] .hljs-literal { color: #569cd6; }
+[data-theme="dark"] .hljs-attr { color: #9cdcfe; }
+[data-theme="dark"] .hljs-selector-tag { color: #d7ba7d; }
+[data-theme="dark"] .hljs-selector-class { color: #d7ba7d; }
+[data-theme="dark"] .hljs-selector-id { color: #d7ba7d; }
+[data-theme="dark"] .hljs-meta { color: #808080; }
+[data-theme="dark"] .hljs-variable { color: #ce9178; }
+[data-theme="dark"] .hljs-params { color: #d4d4d4; }
+[data-theme="dark"] .hljs-bullet { color: #569cd6; }
+[data-theme="dark"] .hljs-link { color: #569cd6; text-decoration: underline; }
+
+/* 暗色主题代码块背景 */
+[data-theme="dark"] .markdown-content code {
+  background: #2d2d2d;
+  color: #d4d4d4;
+}
+[data-theme="dark"] .markdown-content pre code {
+  background: #1e1e1e;
+}

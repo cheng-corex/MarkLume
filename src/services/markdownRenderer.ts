@@ -1,0 +1,98 @@
+import MarkdownIt from "markdown-it";
+import DOMPurify from "dompurify";
+import hljs from "highlight.js";
+
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true,
+  breaks: false,
+  highlight: (str: string, lang: string): string => {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return `<pre class="hljs"><code>${hljs.highlight(str, {
+          language: lang,
+          ignoreIllegals: true,
+        }).value}</code></pre>`;
+      } catch {
+        // fallback
+      }
+    }
+    return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`;
+  },
+});
+
+// 自定义渲染：图片路径相对于文件所在目录
+const defaultImageRenderer =
+  md.renderer.rules.image ||
+  function (tokens, idx, options, env, self) {
+    return self.renderToken(tokens, idx, options);
+  };
+
+md.renderer.rules.image = function (tokens, idx, options, env, self) {
+  const token = tokens[idx];
+  const src = token.attrGet("src");
+  if (src && env?.filePath && !src.startsWith("http://") && !src.startsWith("https://") && !src.startsWith("data:")) {
+    // 将相对路径转为基于文件所在目录的路径
+    const path = env.filePath as string;
+    const dir = path.substring(0, path.lastIndexOf("/") + 1);
+    token.attrSet("src", dir + src);
+  }
+  return defaultImageRenderer(tokens, idx, options, env, self);
+};
+
+export type RenderOptions = {
+  filePath?: string;
+};
+
+/**
+ * 将 Markdown 原文渲染为安全的 HTML
+ */
+export function renderMarkdown(raw: string, options?: RenderOptions): string {
+  const html = md.render(raw, options || {});
+  const clean = DOMPurify.sanitize(html, {
+    ADD_ATTR: ["target"],
+    USE_PROFILES: { html: true },
+  });
+  return clean;
+}
+
+/**
+ * 从 Markdown 原文提取标题（用于大纲）
+ */
+export function extractHeadings(raw: string): Array<{
+  level: number;
+  text: string;
+  id: string;
+}> {
+  const headings: Array<{ level: number; text: string; id: string }> = [];
+  const lines = raw.split("\n");
+  const idCounter = new Map<string, number>();
+
+  for (const line of lines) {
+    const match = line.match(/^(#{1,6})\s+(.+)$/);
+    if (match) {
+      const level = match[1].length;
+      let text = match[2].trim();
+      // 去掉行内格式标记
+      text = text.replace(/[`*~_]/g, "");
+
+      // 生成唯一 ID
+      let id = text
+        .toLowerCase()
+        .replace(/[^\w\u4e00-\u9fff-]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+      if (!id) id = `h-${level}-${headings.length}`;
+
+      const count = idCounter.get(id) || 0;
+      if (count > 0) {
+        id = `${id}-${count}`;
+      }
+      idCounter.set(id, count + 1);
+
+      headings.push({ level, text, id });
+    }
+  }
+
+  return headings;
+}
