@@ -1,8 +1,8 @@
 [package]
 name = "marklume"
 version = "0.1.0"
-description = "A lightweight Markdown reader"
-authors = [""]
+description = "轻量级本地 Markdown 阅读器"
+authors = ["cheng-corex"]
 edition = "2021"
 
 [lib]

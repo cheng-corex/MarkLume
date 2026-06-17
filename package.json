@@ -2,6 +2,13 @@
 	"name": "marklume",
 	"private": true,
 	"version": "0.1.0",
+	"description": "轻量级本地 Markdown 阅读器，基于 Tauri 2 + React + TypeScript",
+	"author": "cheng-corex",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/cheng-corex/MarkLume.git"
+	},
 	"type": "module",
 	"scripts": {
 		"dev": "vite",

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="p1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="p2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <!-- 深色背景 -->
+  <rect width="512" height="512" rx="96" fill="#0f172a"/>
+  <!-- 由 M 演变的棱镜/折线 -->
+  <path d="M120 380 L180 140 L256 260 L332 140 L392 380 L256 440Z" fill="none" stroke="url(#p1)" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- 内部光线条 -->
+  <path d="M180 140 L256 380 L332 140" fill="none" stroke="url(#p2)" stroke-width="12" stroke-linejoin="round" opacity="0.6"/>
+</svg>

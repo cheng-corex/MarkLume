@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="n1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#2dd4bf"/>
+    </linearGradient>
+  </defs>
+  <!-- 极深底色 -->
+  <rect width="512" height="512" rx="96" fill="#020617"/>
+  <!-- 外发光圆环 -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#22d3ee" stroke-width="2" opacity="0.3"/>
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#22d3ee" stroke-width="1" opacity="0.15"/>
+  <!-- 中心霓虹 M（书页造型） -->
+  <path d="M140 370V150l116 80 116-80v220" fill="none" stroke="url(#n1)" stroke-width="36" stroke-linejoin="round" stroke-linecap="round" filter="url(#glow)"/>
+  <!-- 折线底部 -->
+  <line x1="140" y1="370" x2="372" y2="370" stroke="url(#n1)" stroke-width="28" stroke-linecap="round" filter="url(#glow)"/>
+  <!-- 装饰粒子 -->
+  <circle cx="100" cy="120" r="4" fill="#22d3ee" opacity="0.6"/>
+  <circle cx="420" cy="150" r="3" fill="#2dd4bf" opacity="0.4"/>
+  <circle cx="390" cy="400" r="5" fill="#22d3ee" opacity="0.5"/>
+  <circle cx="80" cy="380" r="3" fill="#2dd4bf" opacity="0.3"/>
+</svg>
