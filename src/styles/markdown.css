@@ -95,13 +95,13 @@
   font-family: "SF Mono", "Fira Code", "Consolas", "Monaco", monospace;
   font-size: 0.9em;
   padding: 0.2em 0.4em;
-  background: #f0f0f0;
+  background: var(--code-bg, #f0f0f0);
   border-radius: 3px;
 }
 
 .markdown-content pre code {
   padding: 1em;
-  background: #f6f8fa;
+  background: var(--code-bg-block, #f6f8fa);
 }
 
 /* 表格 */
@@ -160,7 +160,7 @@
 
 /* ===== highlight.js 亮色主题覆盖 ===== */
 .hljs {
-  background: #f6f8fa !important;
+  background: var(--code-bg-block, #f6f8fa) !important;
   color: #24292e;
 }
 
@@ -187,7 +187,7 @@
 
 /* ===== 暗色主题 highlight.js 覆盖 ===== */
 [data-theme="dark"] .hljs {
-  background: #1e1e1e !important;
+  background: var(--code-bg-block, #2d2d2d) !important;
   color: #d4d4d4;
 }
 [data-theme="dark"] .hljs-keyword { color: #569cd6; }

@@ -25,6 +25,8 @@
 	--overlay-bg: rgba(0, 0, 0, 0.3);
 	--panel-bg: #ffffff;
 	--panel-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+	--code-bg: #f0f0f0;
+	--code-bg-block: #f6f8fa;
 }
 
 /* 暗色主题 (class 方式，由设置控制) */
@@ -44,6 +46,8 @@
 	--overlay-bg: rgba(0, 0, 0, 0.5);
 	--panel-bg: #2d2d2d;
 	--panel-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+	--code-bg: #3c3c3c;
+	--code-bg-block: #2d2d2d;
 }
 
 /* 跟随系统暗色主题 */
@@ -64,6 +68,8 @@
 		--overlay-bg: rgba(0, 0, 0, 0.5);
 		--panel-bg: #2d2d2d;
 		--panel-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+		--code-bg: #3c3c3c;
+		--code-bg-block: #2d2d2d;
 	}
 }
 
@@ -339,7 +345,7 @@ body {
 .markdown-content {
   width: 100%;
   max-width: 860px;
-  padding: 40px 32px;
+  padding: 40px 32px 80px;
 }
 
 .raw-content {
@@ -359,7 +365,7 @@ body {
 	gap: 16px;
 	color: var(--text-muted);
 	text-align: center;
-	padding: 0 32px;
+	padding: 40px 32px;
 }
 
 .empty-state-icon {
