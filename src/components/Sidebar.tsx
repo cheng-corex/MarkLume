@@ -7,6 +7,7 @@ type SidebarProps = {
   currentFilePath: string | null;
   onOpenRecent: (path: string, name: string) => void;
   onOpenFolderFile: (path: string) => void;
+  collapsed?: boolean;
 };
 
 type TreeNodeItemProps = {
@@ -77,8 +78,13 @@ function Sidebar({
   currentFilePath,
   onOpenRecent,
   onOpenFolderFile,
+  collapsed,
 }: SidebarProps) {
   const { settings } = useSettings();
+
+  if (collapsed) {
+    return <aside className="sidebar sidebar--collapsed" />;
+  }
 
   return (
     <aside className="sidebar">

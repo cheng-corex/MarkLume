@@ -142,6 +142,26 @@ body {
 	letter-spacing: -0.3px;
 }
 
+.toolbar-icon-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border: none;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--text-secondary);
+	cursor: pointer;
+	transition: background 0.15s, color 0.15s;
+	flex-shrink: 0;
+}
+
+.toolbar-icon-btn:hover {
+	background: var(--bg-hover);
+	color: var(--text-primary);
+}
+
 .file-name {
 	font-size: 13px;
 	color: var(--text-secondary);
@@ -235,6 +255,14 @@ body {
 	border-right: 1px solid var(--border-color);
 	overflow-y: auto;
 	flex-shrink: 0;
+	transition: width 0.2s ease, padding 0.2s ease;
+}
+
+.sidebar--collapsed {
+	width: 0;
+	padding: 0;
+	overflow: hidden;
+	border-right: none;
 }
 
 .sidebar-section {
@@ -261,6 +289,8 @@ body {
 	list-style: none;
 	padding: 0;
 	margin: 0;
+	max-height: 300px;
+	overflow-y: auto;
 }
 
 .recent-file-item {
@@ -420,6 +450,14 @@ body {
 	border-left: 1px solid var(--border-color);
 	overflow-y: auto;
 	flex-shrink: 0;
+	transition: width 0.2s ease, padding 0.2s ease;
+}
+
+.outline-panel--collapsed {
+	width: 0;
+	padding: 0;
+	overflow: hidden;
+	border-left: none;
 }
 
 .outline-section-title {

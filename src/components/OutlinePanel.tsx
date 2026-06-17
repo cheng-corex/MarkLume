@@ -8,13 +8,19 @@ type OutlinePanelProps = {
   headings: Heading[];
   activeHeadingId: string | null;
   onHeadingClick: (id: string) => void;
+  collapsed?: boolean;
 };
 
 function OutlinePanel({
   headings,
   activeHeadingId,
   onHeadingClick,
+  collapsed,
 }: OutlinePanelProps) {
+  if (collapsed) {
+    return <aside className="outline-panel outline-panel--collapsed" />;
+  }
+
   if (headings.length === 0) {
     return (
       <aside className="outline-panel">

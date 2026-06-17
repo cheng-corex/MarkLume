@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Toolbar from "./Toolbar";
 import Sidebar from "./Sidebar";
 import MarkdownViewer from "./MarkdownViewer";
@@ -62,6 +63,9 @@ function AppShell({
   onHeadingClick,
   onSearchFocusAck,
 }: AppShellProps) {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [outlineCollapsed, setOutlineCollapsed] = useState(false);
+
   return (
     <div className="app-shell">
       <Toolbar
@@ -73,6 +77,10 @@ function AppShell({
         onNavigateFile={onNavigateFile}
         onSearchFile={onSearchFile}
         onSearchFolder={onSearchFolder}
+        sidebarCollapsed={sidebarCollapsed}
+        outlineCollapsed={outlineCollapsed}
+        onToggleSidebar={() => setSidebarCollapsed((v) => !v)}
+        onToggleOutline={() => setOutlineCollapsed((v) => !v)}
       />
       <div className="main-content">
         <Sidebar
@@ -80,6 +88,7 @@ function AppShell({
           currentFilePath={currentFilePath}
           onOpenRecent={onOpenRecent}
           onOpenFolderFile={onOpenFolderFile}
+          collapsed={sidebarCollapsed}
         />
         <MarkdownViewer
           fileName={fileName}
@@ -94,6 +103,7 @@ function AppShell({
           headings={headings}
           activeHeadingId={activeHeadingId}
           onHeadingClick={onHeadingClick}
+          collapsed={outlineCollapsed}
         />
       </div>
       {showFolderSearch && (
