@@ -9,7 +9,6 @@ type OutlinePanelProps = {
   activeHeadingId: string | null;
   onHeadingClick: (id: string) => void;
   collapsed?: boolean;
-  onToggle?: () => void;
 };
 
 function OutlinePanel({
@@ -17,18 +16,9 @@ function OutlinePanel({
   activeHeadingId,
   onHeadingClick,
   collapsed,
-  onToggle,
 }: OutlinePanelProps) {
   if (collapsed) {
-    return (
-      <div className="outline-panel outline-panel--collapsed">
-        <button className="panel-toggle panel-toggle--right" onClick={onToggle} title="展开大纲">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <path d="M10 3l-5 5 5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
-      </div>
-    );
+    return <aside className="outline-panel outline-panel--collapsed" />;
   }
 
   if (headings.length === 0) {
@@ -42,11 +32,6 @@ function OutlinePanel({
 
   return (
     <aside className="outline-panel">
-      <button className="panel-toggle panel-toggle--left" onClick={onToggle} title="收起大纲">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-          <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      </button>
       <div className="outline-section-title">大纲</div>
       <nav className="outline-tree">
         {headings.map((h) => (

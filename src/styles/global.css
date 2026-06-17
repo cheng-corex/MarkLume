@@ -259,15 +259,11 @@ body {
 }
 
 .sidebar--collapsed {
-	width: 28px;
-	min-width: 28px;
+	width: 0;
 	padding: 0;
-	overflow: visible;
-	border-right: 1px solid var(--border-color);
-	background: var(--bg-sidebar);
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	overflow: hidden;
+	border-right: none;
+	min-width: 0;
 }
 
 .sidebar-section {
@@ -459,60 +455,32 @@ body {
 }
 
 .outline-panel--collapsed {
-	width: 28px;
-	min-width: 28px;
+	width: 0;
 	padding: 0;
-	overflow: visible;
-	border-left: 1px solid var(--border-color);
-	background: var(--bg-sidebar);
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	overflow: hidden;
+	border-left: none;
+	min-width: 0;
 }
 
-/* ===== 面板边缘折叠/展开按钮（VS Code 风格） ===== */
-.panel-toggle {
-	display: flex;
+/* ===== 工具栏折叠按钮（MarkLume 文本右侧） ===== */
+.tb-toggle-btn {
+	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 18px;
-	height: 48px;
-	border: 1px solid var(--border-color);
+	width: 26px;
+	height: 26px;
+	border: none;
 	border-radius: 4px;
-	background: var(--bg-secondary);
+	background: transparent;
 	color: var(--text-muted);
 	cursor: pointer;
-	position: absolute;
-	z-index: 10;
-	transition: color 0.15s, background 0.15s;
-	padding: 0;
+	transition: background 0.15s, color 0.15s;
+	margin-left: 2px;
 }
 
-.panel-toggle:hover {
+.tb-toggle-btn:hover {
 	background: var(--bg-hover);
 	color: var(--text-primary);
-}
-
-/* 侧边栏：按钮贴在右边框 */
-.panel-toggle--right {
-	right: -10px;
-	top: 50%;
-	transform: translateY(-50%);
-	border-right: none;
-}
-
-/* 大纲面板：按钮贴在左边框 */
-.panel-toggle--left {
-	left: -10px;
-	top: 50%;
-	transform: translateY(-50%);
-	border-left: none;
-}
-
-/* 侧边栏和大纲面板都设为 relative 让按钮绝对定位 */
-.sidebar,
-.outline-panel {
-	position: relative;
 }
 
 .outline-section-title {

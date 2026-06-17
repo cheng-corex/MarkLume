@@ -10,6 +10,10 @@ type ToolbarProps = {
   onNavigateFile: (direction: "prev" | "next") => void;
   onSearchFile: () => void;
   onSearchFolder: () => void;
+  sidebarCollapsed: boolean;
+  outlineCollapsed: boolean;
+  onToggleSidebar: () => void;
+  onToggleOutline: () => void;
 };
 
 function Toolbar({
@@ -21,6 +25,10 @@ function Toolbar({
   onNavigateFile,
   onSearchFile,
   onSearchFolder,
+  sidebarCollapsed,
+  outlineCollapsed,
+  onToggleSidebar,
+  onToggleOutline,
 }: ToolbarProps) {
   const [showSettings, setShowSettings] = useState(false);
 
@@ -28,6 +36,24 @@ function Toolbar({
     <header className="toolbar">
       <div className="toolbar-left">
         <span className="app-title">MarkLume</span>
+        <button className="tb-toggle-btn" onClick={onToggleSidebar} title={sidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            {sidebarCollapsed ? (
+              <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            ) : (
+              <path d="M10 3l-5 5 5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            )}
+          </svg>
+        </button>
+        <button className="tb-toggle-btn" onClick={onToggleOutline} title={outlineCollapsed ? "展开大纲" : "收起大纲"}>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            {outlineCollapsed ? (
+              <path d="M10 3l-5 5 5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            ) : (
+              <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            )}
+          </svg>
+        </button>
       </div>
       <div className="toolbar-center">
         {fileName ? (
