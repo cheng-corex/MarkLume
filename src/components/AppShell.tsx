@@ -77,10 +77,6 @@ function AppShell({
         onNavigateFile={onNavigateFile}
         onSearchFile={onSearchFile}
         onSearchFolder={onSearchFolder}
-        sidebarCollapsed={sidebarCollapsed}
-        outlineCollapsed={outlineCollapsed}
-        onToggleSidebar={() => setSidebarCollapsed((v) => !v)}
-        onToggleOutline={() => setOutlineCollapsed((v) => !v)}
       />
       <div className="main-content">
         <Sidebar
@@ -89,6 +85,7 @@ function AppShell({
           onOpenRecent={onOpenRecent}
           onOpenFolderFile={onOpenFolderFile}
           collapsed={sidebarCollapsed}
+          onToggle={() => setSidebarCollapsed((v) => !v)}
         />
         <MarkdownViewer
           fileName={fileName}
@@ -104,6 +101,7 @@ function AppShell({
           activeHeadingId={activeHeadingId}
           onHeadingClick={onHeadingClick}
           collapsed={outlineCollapsed}
+          onToggle={() => setOutlineCollapsed((v) => !v)}
         />
       </div>
       {showFolderSearch && (

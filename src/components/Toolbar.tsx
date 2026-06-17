@@ -10,10 +10,6 @@ type ToolbarProps = {
   onNavigateFile: (direction: "prev" | "next") => void;
   onSearchFile: () => void;
   onSearchFolder: () => void;
-  sidebarCollapsed: boolean;
-  outlineCollapsed: boolean;
-  onToggleSidebar: () => void;
-  onToggleOutline: () => void;
 };
 
 function Toolbar({
@@ -25,29 +21,12 @@ function Toolbar({
   onNavigateFile,
   onSearchFile,
   onSearchFolder,
-  sidebarCollapsed,
-  outlineCollapsed,
-  onToggleSidebar,
-  onToggleOutline,
 }: ToolbarProps) {
   const [showSettings, setShowSettings] = useState(false);
 
   return (
     <header className="toolbar">
       <div className="toolbar-left">
-        <button
-          className="toolbar-icon-btn"
-          onClick={onToggleSidebar}
-          title={sidebarCollapsed ? "展开侧边栏" : "收起侧边栏"}
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            {sidebarCollapsed ? (
-              <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            ) : (
-              <path d="M10 3l-5 5 5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            )}
-          </svg>
-        </button>
         <span className="app-title">MarkLume</span>
       </div>
       <div className="toolbar-center">
@@ -138,19 +117,6 @@ function Toolbar({
             <path d="M2 4.5C2 3.67 2.67 3 3.5 3h2.59l1 1H13c.83 0 1.5.67 1.5 1.5v6c0 .83-.67 1.5-1.5 1.5H3.5c-.83 0-1.5-.67-1.5-1.5V4.5z" stroke="currentColor" strokeWidth="1.2" fill="none"/>
           </svg>
           <span>打开文件</span>
-        </button>
-        <button
-          className="toolbar-icon-btn"
-          onClick={onToggleOutline}
-          title={outlineCollapsed ? "展开大纲" : "收起大纲"}
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            {outlineCollapsed ? (
-              <path d="M3 10l5-5 5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            ) : (
-              <path d="M3 6l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            )}
-          </svg>
         </button>
       </div>
       {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} />}

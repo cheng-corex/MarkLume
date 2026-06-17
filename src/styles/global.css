@@ -259,10 +259,15 @@ body {
 }
 
 .sidebar--collapsed {
-	width: 0;
+	width: 28px;
+	min-width: 28px;
 	padding: 0;
-	overflow: hidden;
-	border-right: none;
+	overflow: visible;
+	border-right: 1px solid var(--border-color);
+	background: var(--bg-sidebar);
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .sidebar-section {
@@ -454,10 +459,60 @@ body {
 }
 
 .outline-panel--collapsed {
-	width: 0;
+	width: 28px;
+	min-width: 28px;
 	padding: 0;
-	overflow: hidden;
+	overflow: visible;
+	border-left: 1px solid var(--border-color);
+	background: var(--bg-sidebar);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* ===== 面板边缘折叠/展开按钮（VS Code 风格） ===== */
+.panel-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 48px;
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+	background: var(--bg-secondary);
+	color: var(--text-muted);
+	cursor: pointer;
+	position: absolute;
+	z-index: 10;
+	transition: color 0.15s, background 0.15s;
+	padding: 0;
+}
+
+.panel-toggle:hover {
+	background: var(--bg-hover);
+	color: var(--text-primary);
+}
+
+/* 侧边栏：按钮贴在右边框 */
+.panel-toggle--right {
+	right: -10px;
+	top: 50%;
+	transform: translateY(-50%);
+	border-right: none;
+}
+
+/* 大纲面板：按钮贴在左边框 */
+.panel-toggle--left {
+	left: -10px;
+	top: 50%;
+	transform: translateY(-50%);
 	border-left: none;
+}
+
+/* 侧边栏和大纲面板都设为 relative 让按钮绝对定位 */
+.sidebar,
+.outline-panel {
+	position: relative;
 }
 
 .outline-section-title {
