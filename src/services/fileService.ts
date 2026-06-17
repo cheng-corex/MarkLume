@@ -125,11 +125,13 @@ export function flattenTree(node: TreeNode): FolderFile[] {
         relativePath: prefix || n.name,
       });
     }
-    for (const child of n.children) {
-      const newPrefix = n.is_dir
-        ? (prefix ? `${prefix}/${n.name}` : n.name)
-        : prefix;
-      walk(child, newPrefix);
+    if (n.children) {
+      for (const child of n.children) {
+        const newPrefix = n.is_dir
+          ? (prefix ? `${prefix}/${n.name}` : n.name)
+          : prefix;
+        walk(child, newPrefix);
+      }
     }
   }
   walk(node, "");

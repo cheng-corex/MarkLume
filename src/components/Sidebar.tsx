@@ -57,7 +57,7 @@ function TreeNodeItem({ node, depth, currentFilePath, onOpenFile }: TreeNodeItem
       </div>
       {node.is_dir && expanded && hasChildren && (
         <div className="tree-children">
-          {node.children.map((child) => (
+          {(node.children || []).map((child) => (
             <TreeNodeItem
               key={child.path}
               node={child}
@@ -91,7 +91,7 @@ function Sidebar({
             {folderTree.name}
           </div>
           <div className="tree-view">
-            {folderTree.children.map((child) => (
+            {(folderTree.children || []).map((child) => (
               <TreeNodeItem
                 key={child.path}
                 node={child}
