@@ -14,6 +14,9 @@ Thumbs.db
 *.swp
 *.swo
 
+# Docs (development notes, not for distribution)
+docs/
+
 # Logs
 *.log
 
