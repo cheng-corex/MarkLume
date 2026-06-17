@@ -2,6 +2,24 @@ import MarkdownIt from "markdown-it";
 import DOMPurify from "dompurify";
 import hljs from "highlight.js";
 
+// 从标题文本生成唯一 ID（与 extractHeadings 保持同步）
+function headingTextToId(text: string, usedIds: Map<string, number>): string {
+  let id = text
+    .toLowerCase()
+    .replace(/[^\w\u4e00-\u9fff-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  if (!id) id = "heading";
+
+  const count = usedIds.get(id) || 0;
+  if (count > 0) {
+    id = `${id}-${count}`;
+  }
+  usedIds.set(id, count + 1);
+  return id;
+}
+
+const usedHeadingIds = new Map<string, number>();
+
 const md = new MarkdownIt({
   html: true,
   linkify: true,
@@ -21,6 +39,29 @@ const md = new MarkdownIt({
     return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`;
   },
 });
+
+// 自定义标题渲染：加上 id 属性，与 extractHeadings 一致
+const defaultHeadingRenderer = md.renderer.rules.heading_open || function (tokens, idx, options, env, self) {
+  return self.renderToken(tokens, idx, options);
+};
+
+md.renderer.rules.heading_open = function (tokens, idx, options, env, self) {
+  const token = tokens[idx];
+  // 获取标题纯文本
+  const inlineToken = tokens[idx + 1];
+  let text = "";
+  if (inlineToken && inlineToken.type === "inline" && inlineToken.children) {
+    text = inlineToken.children
+      .filter((t: any) => t.type === "text" || t.type === "code_inline")
+      .map((t: any) => t.content)
+      .join("");
+  }
+  if (text) {
+    const id = headingTextToId(text, usedHeadingIds);
+    token.attrSet("id", id);
+  }
+  return defaultHeadingRenderer(tokens, idx, options, env, self);
+};
 
 // 自定义渲染：图片路径相对于文件所在目录
 const defaultImageRenderer =
@@ -49,6 +90,7 @@ export type RenderOptions = {
  * 将 Markdown 原文渲染为安全的 HTML
  */
 export function renderMarkdown(raw: string, options?: RenderOptions): string {
+  usedHeadingIds.clear();
   const html = md.render(raw, options || {});
   const clean = DOMPurify.sanitize(html, {
     ADD_ATTR: ["target"],
@@ -77,19 +119,7 @@ export function extractHeadings(raw: string): Array<{
       // 去掉行内格式标记
       text = text.replace(/[`*~_]/g, "");
 
-      // 生成唯一 ID
-      let id = text
-        .toLowerCase()
-        .replace(/[^\w\u4e00-\u9fff-]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-      if (!id) id = `h-${level}-${headings.length}`;
-
-      const count = idCounter.get(id) || 0;
-      if (count > 0) {
-        id = `${id}-${count}`;
-      }
-      idCounter.set(id, count + 1);
-
+      const id = headingTextToId(text, idCounter);
       headings.push({ level, text, id });
     }
   }
