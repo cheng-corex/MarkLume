@@ -290,48 +290,55 @@ body {
 	text-overflow: ellipsis;
 }
 
-/* 文件夹文件列表 */
-.folder-files-list {
-	list-style: none;
-	padding: 0;
-	margin: 0;
+/* ===== 文件树 ===== */
+.tree-view {
+  padding: 0 0 8px;
 }
 
-.folder-file-item {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	padding: 5px 16px;
-	cursor: pointer;
-	font-size: 12px;
-	color: var(--text-primary);
-	transition: background 0.1s ease;
-	overflow: hidden;
+.tree-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 16px 4px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-primary);
+  transition: background 0.1s ease;
+  user-select: none;
+  line-height: 1.5;
 }
 
-.folder-file-item:hover {
-	background: var(--bg-hover);
+.tree-item:hover {
+  background: var(--bg-hover);
 }
 
-.folder-file-item.active {
-	background: var(--bg-hover);
-	color: var(--accent-color);
-	font-weight: 500;
+.tree-item.active {
+  background: var(--accent-color);
+  color: #fff;
 }
 
-.folder-file-icon {
-	flex-shrink: 0;
-	color: var(--text-muted);
+.tree-item.active .tree-icon {
+  color: #fff;
 }
 
-.folder-file-item.active .folder-file-icon {
-	color: var(--accent-color);
+.tree-icon {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform 0.15s;
 }
 
-.folder-file-name {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+.tree-folder-icon {
+  color: var(--accent-color);
+}
+
+.tree-item-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tree-children .tree-item {
+  /* sub-items automatically get indented via paddingLeft */
 }
 
 /* ===== Reader Area ===== */

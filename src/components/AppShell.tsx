@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 import MarkdownViewer from "./MarkdownViewer";
 import OutlinePanel from "./OutlinePanel";
 import FolderSearchPanel from "./FolderSearchPanel";
-import type { FolderFile } from "../services/fileService";
+import type { FolderFile, TreeNode } from "../services/fileService";
 
 type Heading = {
   level: number;
@@ -17,6 +17,7 @@ type AppShellProps = {
   filePath: string;
   headings: Heading[];
   activeHeadingId: string | null;
+  folderTree: TreeNode | null;
   folderFiles: FolderFile[];
   currentFilePath: string | null;
   currentFileIndex: number;
@@ -42,6 +43,7 @@ function AppShell({
   filePath,
   headings,
   activeHeadingId,
+  folderTree,
   folderFiles,
   currentFilePath,
   currentFileIndex,
@@ -74,7 +76,7 @@ function AppShell({
       />
       <div className="main-content">
         <Sidebar
-          folderFiles={folderFiles}
+          folderTree={folderTree}
           currentFilePath={currentFilePath}
           onOpenRecent={onOpenRecent}
           onOpenFolderFile={onOpenFolderFile}

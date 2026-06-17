@@ -29,6 +29,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             commands::read_markdown_file,
             commands::scan_markdown_files,
+            commands::scan_folder_tree,
             get_initial_file
         ])
         .run(tauri::generate_context!())

@@ -5,9 +5,11 @@ import {
   pickMarkdownFile,
   pickFolder,
   readFile,
-  scanFolder,
+  scanFolderTree,
+  flattenTree,
   type FileContent,
   type FolderFile,
+  type TreeNode,
 } from "./services/fileService";
 import { extractHeadings } from "./services/markdownRenderer";
 import { invoke } from "@tauri-apps/api/core";
@@ -16,10 +18,18 @@ import "./styles/global.css";
 function AppInner() {
   const [file, setFile] = useState<FileContent | null>(null);
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null);
-  const [folderFiles, setFolderFiles] = useState<FolderFile[]>([]);
+  const [folderTree, setFolderTree] = useState<TreeNode | null>(null);
   const [showFolderSearch, setShowFolderSearch] = useState(false);
   const [searchFocused, setSearchFocused] = useState(0);
   const { addRecentFile, updateSettings, settings } = useSettings();
+
+  // 从树结构派生平铺文件列表（用于导航和搜索）
+  const folderFiles: FolderFile[] = useMemo(() => {
+    return folderTree ? flattenTree(folderTree) : [];
+  }, [folderTree]);
+
+  // 记录最后打开的文件夹路径（用于下次启动恢复）
+  const [lastOpenedFolderPath, setLastOpenedFolderPath] = useState<string | null>(null);
 
   // 启动时恢复上次文件夹和文件
   useEffect(() => {
@@ -27,10 +37,12 @@ function AppInner() {
     const restoreLastFolder = async () => {
       if (!settings.lastOpenedFolder) return;
       try {
-        const files = await scanFolder(settings.lastOpenedFolder);
-        setFolderFiles(files);
+        const tree = await scanFolderTree(settings.lastOpenedFolder);
+        setFolderTree(tree);
+        setLastOpenedFolderPath(settings.lastOpenedFolder);
         if (settings.lastOpenedFile) {
-          const exists = files.some((f) => f.path === settings.lastOpenedFile);
+          const flatFiles = flattenTree(tree);
+          const exists = flatFiles.some((f) => f.path === settings.lastOpenedFile);
           if (exists) {
             const content = await readFile(settings.lastOpenedFile!);
             setFile(content);
@@ -128,10 +140,12 @@ function AppInner() {
       const dirPath = await pickFolder();
       if (!dirPath) return;
 
-      const files = await scanFolder(dirPath);
-      setFolderFiles(files);
+      const tree = await scanFolderTree(dirPath);
+      setFolderTree(tree);
+      setLastOpenedFolderPath(dirPath);
       updateSettings({ lastOpenedFolder: dirPath });
 
+      const files = flattenTree(tree);
       if (files.length > 0) {
         const content = await readFile(files[0].path);
         setFile(content);
@@ -194,6 +208,7 @@ function AppInner() {
       filePath={file?.path ?? ""}
       headings={headings}
       activeHeadingId={activeHeadingId}
+      folderTree={folderTree}
       folderFiles={folderFiles}
       currentFilePath={file?.path ?? null}
       currentFileIndex={currentIndex}

@@ -101,6 +101,109 @@ pub fn scan_markdown_files(dir: &str) -> Result<Vec<FileEntry>, String> {
     Ok(files)
 }
 
+// ===== 树形结构扫描 =====
+
+#[derive(Serialize)]
+pub struct TreeNode {
+    pub name: String,
+    pub path: String,
+    pub is_dir: bool,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub children: Vec<TreeNode>,
+}
+
+pub fn scan_folder_tree(dir: &str) -> Result<TreeNode, String> {
+    let dir_path = Path::new(dir);
+    if !dir_path.is_dir() {
+        return Err(format!("目录不存在: {}", dir));
+    }
+    let dir_name = dir_path
+        .file_name()
+        .and_then(|n| n.to_str())
+        .unwrap_or("root")
+        .to_string();
+
+    let mut root = TreeNode {
+        name: dir_name,
+        path: dir_path.to_string_lossy().to_string(),
+        is_dir: true,
+        children: Vec::new(),
+    };
+    build_tree(dir_path, &mut root, 0)?;
+    Ok(root)
+}
+
+fn build_tree(base: &Path, node: &mut TreeNode, depth: u32) -> Result<(), String> {
+    if depth > MAX_SCAN_DEPTH {
+        return Ok(());
+    }
+
+    let entries = fs::read_dir(base).map_err(|e| format!("无法读取目录: {}", e))?;
+    let mut items: Vec<(bool, String, String)> = Vec::new();
+
+    for entry in entries {
+        let entry = entry.map_err(|e| format!("无法读取目录项: {}", e))?;
+        let path = entry.path();
+        let name = path
+            .file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or("")
+            .to_string();
+
+        if name.starts_with('.') {
+            continue; // 跳过隐藏文件/目录
+        }
+
+        if path.is_dir() {
+            items.push((true, name, path.to_string_lossy().to_string()));
+        } else if path.is_file() {
+            let ext = path
+                .extension()
+                .and_then(|e| e.to_str())
+                .unwrap_or("")
+                .to_lowercase();
+            if ALLOWED_EXTENSIONS.contains(&ext.as_str()) {
+                items.push((false, name, path.to_string_lossy().to_string()));
+            }
+        }
+    }
+
+    // 排序：目录在前，文件在后，按名称字母序
+    items.sort_by(|a, b| {
+        if a.0 != b.0 {
+            // 目录排在文件前面
+            b.0.cmp(&a.0)
+        } else {
+            a.1.to_lowercase().cmp(&b.1.to_lowercase())
+        }
+    });
+
+    for (is_dir, name, path_str) in items {
+        if is_dir {
+            let mut child = TreeNode {
+                name,
+                path: path_str.clone(),
+                is_dir: true,
+                children: Vec::new(),
+            };
+            build_tree(Path::new(&path_str), &mut child, depth + 1)?;
+            // 只添加包含 .md/.txt 文件的目录
+            if !child.children.is_empty() {
+                node.children.push(child);
+            }
+        } else {
+            node.children.push(TreeNode {
+                name,
+                path: path_str,
+                is_dir: false,
+                children: Vec::new(),
+            });
+        }
+    }
+
+    Ok(())
+}
+
 fn scan_dir_recursive(
     base: &Path,
     dir: &Path,

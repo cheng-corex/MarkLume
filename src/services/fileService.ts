@@ -15,6 +15,13 @@ export type FolderFile = {
   relativePath: string;
 };
 
+export type TreeNode = {
+  name: string;
+  path: string;
+  is_dir: boolean;
+  children: TreeNode[];
+};
+
 export type FolderState = {
   folderPath: string;
   files: FolderFile[];
@@ -96,4 +103,35 @@ export async function scanFolder(dir: string): Promise<FolderFile[]> {
     name: f.name,
     relativePath: f.relative_path,
   }));
+}
+
+/**
+ * 扫描文件夹并返回树形结构
+ */
+export async function scanFolderTree(dir: string): Promise<TreeNode> {
+  return await invoke<TreeNode>("scan_folder_tree", { path: dir });
+}
+
+/**
+ * 将树形结构展平为文件列表（用于搜索和导航）
+ */
+export function flattenTree(node: TreeNode): FolderFile[] {
+  const files: FolderFile[] = [];
+  function walk(n: TreeNode, prefix: string) {
+    if (!n.is_dir) {
+      files.push({
+        path: n.path,
+        name: n.name,
+        relativePath: prefix || n.name,
+      });
+    }
+    for (const child of n.children) {
+      const newPrefix = n.is_dir
+        ? (prefix ? `${prefix}/${n.name}` : n.name)
+        : prefix;
+      walk(child, newPrefix);
+    }
+  }
+  walk(node, "");
+  return files;
 }
