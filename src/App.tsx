@@ -33,20 +33,45 @@ function AppInner() {
 
   // 启动时恢复上次文件夹和文件
   useEffect(() => {
-    // 1. 恢复上次打开的文件夹
-    const restoreLastFolder = async () => {
+    let cancelled = false;
+
+    const init = async () => {
+      // 1. 先检查是否通过双击文件打开
+      let initialFilePath: string | null = null;
+      try {
+        initialFilePath = await invoke<string | null>("get_initial_file");
+      } catch {
+        // 忽略
+      }
+
+      if (cancelled) return;
+
+      // 如果有初始文件（双击打开），优先打开它
+      if (initialFilePath) {
+        try {
+          const content = await readFile(initialFilePath);
+          if (cancelled) return;
+          setFile(content);
+          addRecentFile(initialFilePath, content.name);
+        } catch {
+          // 读取失败，忽略
+        }
+        return;
+      }
+
+      // 2. 没有初始文件，恢复上次的文件夹
       if (!settings.lastOpenedFolder) return;
       try {
         const tree = await scanFolderTree(settings.lastOpenedFolder);
+        if (cancelled) return;
         setFolderTree(tree);
-        setLastOpenedFolderPath(settings.lastOpenedFolder);
         if (settings.lastOpenedFile) {
           const flatFiles = flattenTree(tree);
           const exists = flatFiles.some((f) => f.path === settings.lastOpenedFile);
           if (exists) {
             const content = await readFile(settings.lastOpenedFile!);
+            if (cancelled) return;
             setFile(content);
-            return;
           }
         }
       } catch {
@@ -54,22 +79,11 @@ function AppInner() {
       }
     };
 
-    // 2. 检查是通过文件关联启动的（双击 .md 文件打开）
-    const checkInitialFile = async () => {
-      try {
-        const initialPath = await invoke<string | null>("get_initial_file");
-        if (initialPath) {
-          const content = await readFile(initialPath);
-          setFile(content);
-          addRecentFile(initialPath, content.name);
-        }
-      } catch {
-        // 忽略
-      }
-    };
+    init();
 
-    restoreLastFolder();
-    checkInitialFile();
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

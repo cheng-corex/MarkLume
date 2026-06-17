@@ -59,7 +59,15 @@ function MarkdownViewer({
 
   const html = useMemo(() => {
     if (!fileContent) return "";
-    return renderMarkdown(fileContent, { filePath });
+    try {
+      return renderMarkdown(fileContent, { filePath });
+    } catch (err) {
+      console.error("Markdown 渲染失败:", err);
+      return `<div style="padding: 32px; color: #999; text-align: center;">
+        <p>⚠️ Markdown 渲染失败</p>
+        <pre style="margin-top: 12px; font-size: 12px; color: #666;">${String(err)}</pre>
+      </div>`;
+    }
   }, [fileContent, filePath]);
 
   const contentWidthMap = {
