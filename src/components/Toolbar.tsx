@@ -53,9 +53,8 @@ function Toolbar({
         </button>
         <button className="tb-toggle-btn" onClick={onToggleImmersive} title="沉浸式阅读 (Esc)">
           <svg width="18" height="14" viewBox="0 0 22 16" fill="none">
-            <rect x="0.5" y="0.5" width="21" height="15" rx="1.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
-            <path d="M3 5.5h16" stroke="currentColor" strokeWidth="1.2"/>
-            <path d="M8 10l-3 3 3 3M14 10l3 3-3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+            <path d="M2 9V4c0-.55.45-1 1-1h4M20 7v5c0 .55-.45 1-1 1h-4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M2 9l4-4M20 7l-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
           </svg>
         </button>
       </div>
