@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import AppShell from "./components/AppShell";
 import { SettingsProvider, useSettings } from "./stores/settingsStore.tsx";
 import {
@@ -13,6 +13,7 @@ import {
 } from "./services/fileService";
 import { extractHeadings } from "./services/markdownRenderer";
 import { invoke } from "@tauri-apps/api/core";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import "./styles/global.css";
 
 function AppInner() {
@@ -86,6 +87,69 @@ function AppInner() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // 拖拽文件到窗口打开
+  const [isDragging, setIsDragging] = useState(false);
+  const dragTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const appWindow = getCurrentWebviewWindow();
+    let unlisten: (() => void) | undefined;
+
+    appWindow.onDragDropEvent((event) => {
+      const { type } = event.payload;
+
+      if (type === "over") {
+        // 延迟显示拖拽提示，避免闪烁
+        if (dragTimeoutRef.current) {
+          clearTimeout(dragTimeoutRef.current);
+        }
+        dragTimeoutRef.current = window.setTimeout(() => setIsDragging(true), 100);
+      } else if (type === "leave") {
+        setIsDragging(false);
+        if (dragTimeoutRef.current) {
+          clearTimeout(dragTimeoutRef.current);
+          dragTimeoutRef.current = null;
+        }
+      } else if (type === "drop") {
+        setIsDragging(false);
+        if (dragTimeoutRef.current) {
+          clearTimeout(dragTimeoutRef.current);
+          dragTimeoutRef.current = null;
+        }
+
+        const paths = event.payload.paths;
+        if (paths && paths.length > 0) {
+          const filePath = paths[0];
+          // 检查扩展名
+          const ext = filePath.split(".").pop()?.toLowerCase();
+          const allowed = ["md", "markdown", "txt"];
+          if (ext && allowed.includes(ext)) {
+            readFile(filePath)
+              .then((content) => {
+                setFile(content);
+                addRecentFile(filePath, content.name);
+                setActiveHeadingId(null);
+              })
+              .catch((err) => {
+                alert(`无法打开文件：${err}`);
+              });
+          } else {
+            alert("仅支持 .md、.markdown、.txt 文件");
+          }
+        }
+      }
+    }).then((fn) => {
+      unlisten = fn;
+    });
+
+    return () => {
+      unlisten?.();
+      if (dragTimeoutRef.current) {
+        clearTimeout(dragTimeoutRef.current);
+      }
+    };
+  }, [addRecentFile]);
 
   // 全局 Ctrl+Shift+F 快捷键
   useEffect(() => {
@@ -217,6 +281,7 @@ function AppInner() {
   }, []);
 
   return (
+    <>
     <AppShell
       fileName={file?.name ?? ""}
       fileContent={file?.content ?? ""}
@@ -242,6 +307,20 @@ function AppInner() {
       onHeadingClick={handleHeadingClick}
       onSearchFocusAck={handleSearchFocusAck}
     />
+    {isDragging && (
+      <div className="drag-overlay">
+        <div className="drag-overlay-content">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <rect x="6" y="4" width="36" height="40" rx="3" stroke="currentColor" strokeWidth="2" fill="none" />
+            <path d="M16 20h16M16 28h16M16 36h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <path d="M24 10l-6 6h4v8h4v-8h4l-6-6z" fill="currentColor" opacity="0.6"/>
+          </svg>
+          <h3>释放以打开文件</h3>
+          <p>支持 .md、.markdown、.txt 格式</p>
+        </div>
+      </div>
+    )}
+  </>
   );
 }
 
