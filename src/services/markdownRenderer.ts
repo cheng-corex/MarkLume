@@ -26,24 +26,49 @@ const md = new MarkdownIt({
   typographer: true,
   breaks: false,
   highlight: (str: string, lang: string): string => {
-    let codeHtml: string;
+    // highlight 函数的返回值本身会被 markdown-it 包在 <pre><code> 中，
+    // 所以我们只需返回内部高亮 HTML，自定义 fence 规则会替代整个结构
     if (lang && hljs.getLanguage(lang)) {
       try {
-        codeHtml = hljs.highlight(str, {
+        return hljs.highlight(str, {
           language: lang,
           ignoreIllegals: true,
         }).value;
       } catch {
-        codeHtml = md.utils.escapeHtml(str);
+        // fallback
       }
-    } else {
-      codeHtml = md.utils.escapeHtml(str);
     }
+    return md.utils.escapeHtml(str);
+  },
+});
 
-    const encoded = btoa(encodeURIComponent(str));
-    const langLabel = lang ? `<span class="code-lang-label">${lang}</span>` : "";
+// 自定义 fence 渲染：代码块包装器 + 复制按钮 + 语言标签
+const defaultFenceRenderer = md.renderer.rules.fence;
 
-    return `<div class="code-block-wrapper">
+md.renderer.rules.fence = function (tokens, idx, options, env, self) {
+  const token = tokens[idx];
+  const lang = token.info ? token.info.trim().split(/\s+/g)[0] : "";
+  const code = token.content;
+
+  let codeHtml: string;
+  if (lang && hljs.getLanguage(lang)) {
+    try {
+      codeHtml = hljs.highlight(code, {
+        language: lang,
+        ignoreIllegals: true,
+      }).value;
+    } catch {
+      codeHtml = md.utils.escapeHtml(code);
+    }
+  } else {
+    codeHtml = md.utils.escapeHtml(code);
+  }
+
+  const encoded = btoa(encodeURIComponent(code));
+
+  const langLabel = lang ? `<span class="code-lang-label">${lang}</span>` : "";
+
+  return `<div class="code-block-wrapper">
   <div class="code-block-header">
     ${langLabel}
     <button class="copy-btn" data-code="${encoded}" title="复制代码">
@@ -55,8 +80,7 @@ const md = new MarkdownIt({
   </div>
   <pre class="hljs"><code>${codeHtml}</code></pre>
 </div>`;
-  },
-});
+};
 
 // 自定义标题渲染：加上 id 属性，与 extractHeadings 一致
 const defaultHeadingRenderer = md.renderer.rules.heading_open || function (tokens, idx, options, env, self) {

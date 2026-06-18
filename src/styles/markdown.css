@@ -144,6 +144,11 @@
   border: none;
 }
 
+/* 代码块包装器内 pre code 继承样式，不额外加圆角和外边距 */
+.code-block-wrapper pre code {
+  border-radius: 0;
+}
+
 /* 行内代码 */
 .markdown-content code {
   font-family: "SF Mono", "Fira Code", "Consolas", "Monaco", monospace;
