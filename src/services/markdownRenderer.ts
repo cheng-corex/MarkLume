@@ -128,10 +128,14 @@ md.renderer.rules.image = function (tokens, idx, options, env, self) {
   const token = tokens[idx];
   const src = token.attrGet("src");
   if (src && env?.filePath && !src.startsWith("http://") && !src.startsWith("https://") && !src.startsWith("data:")) {
-    // 将相对路径转为基于文件所在目录的路径
-    const path = env.filePath as string;
-    const dir = path.substring(0, path.lastIndexOf("/") + 1);
-    token.attrSet("src", dir + src);
+    // 只处理 ./ 和 ../ 开头的真正相对路径
+    if (src.startsWith("./") || src.startsWith("../")) {
+      const path = env.filePath as string;
+      // 兼容 Windows 反斜杠路径
+      const sep = path.includes("\\") ? "\\" : "/";
+      const dir = path.substring(0, path.lastIndexOf(sep) + 1);
+      token.attrSet("src", dir + src);
+    }
   }
   return defaultImageRenderer(tokens, idx, options, env, self);
 };
