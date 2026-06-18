@@ -4,6 +4,7 @@ import Sidebar from "./Sidebar";
 import MarkdownViewer from "./MarkdownViewer";
 import OutlinePanel from "./OutlinePanel";
 import FolderSearchPanel from "./FolderSearchPanel";
+import TabBar, { type TabData } from "./TabBar";
 import type { FolderFile, TreeNode } from "../services/fileService";
 
 type Heading = {
@@ -38,6 +39,10 @@ type AppShellProps = {
   onSearchFocusAck: () => void;
   isBookmarked: boolean;
   onToggleBookmark: () => void;
+  tabs: TabData[];
+  activeTabId: string | null;
+  onSelectTab: (id: string) => void;
+  onCloseTab: (id: string) => void;
 };
 
 function AppShell({
@@ -66,6 +71,10 @@ function AppShell({
   onSearchFocusAck,
   isBookmarked,
   onToggleBookmark,
+  tabs,
+  activeTabId,
+  onSelectTab,
+  onCloseTab,
 }: AppShellProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [outlineCollapsed, setOutlineCollapsed] = useState(false);
@@ -95,6 +104,14 @@ function AppShell({
           onToggleImmersive={handleToggleImmersive}
           isBookmarked={isBookmarked}
           onToggleBookmark={onToggleBookmark}
+        />
+      )}
+      {!immersive && (
+        <TabBar
+          tabs={tabs}
+          activeTabId={activeTabId}
+          onSelectTab={onSelectTab}
+          onCloseTab={onCloseTab}
         />
       )}
       <div className="main-content">

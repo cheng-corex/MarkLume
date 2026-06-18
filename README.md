@@ -64,7 +64,7 @@
 从 [Releases 页面](https://github.com/cheng-corex/MarkLume/releases) 下载最新版安装包：
 
 ```bash
-# 下载 MarkLume_0.3.0_x64-setup.exe
+# 下载 MarkLume_0.4.0_x64-setup.exe
 # 双击安装即可使用
 ```
 
@@ -171,6 +171,8 @@ MarkLume/
 - [x] 行号显示
 
 ### v0.3.x — 进阶功能 ✅
+- [x] 多标签页支持
+- [x] 单实例窗口置顶
 - [x] 字体族自定义
 - [x] 自定义 CSS 主题（羊皮纸/Solarized/Nord/Dracula）
 - [x] 收藏书签（⭐ 收藏/取消，侧边栏管理）
@@ -179,7 +181,8 @@ MarkLume/
 - [x] 全局禁用默认右键菜单
 
 ### v0.4.x — 待定
-- [ ] 多标签页支持
+- [ ] 导出为 PDF/HTML
+- [ ] macOS/Linux 支持
 
 ### v1.0.0 — 稳定版
 - [ ] 性能优化
