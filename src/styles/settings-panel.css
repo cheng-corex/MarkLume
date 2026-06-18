@@ -16,7 +16,7 @@
 	border: 1px solid var(--border-color);
 	border-radius: 12px;
 	box-shadow: var(--panel-shadow);
-	width: 380px;
+	width: 440px;
 	max-height: 80vh;
 	overflow-y: auto;
 	z-index: 101;
