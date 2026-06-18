@@ -64,7 +64,7 @@
 从 [Releases 页面](https://github.com/cheng-corex/MarkLume/releases) 下载最新版安装包：
 
 ```bash
-# 下载 MarkLume_x.x.x_x64-setup.exe
+# 下载 MarkLume_0.2.0_x64-setup.exe
 # 双击安装即可使用
 ```
 
