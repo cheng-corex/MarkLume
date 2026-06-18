@@ -128,14 +128,11 @@ md.renderer.rules.image = function (tokens, idx, options, env, self) {
   const token = tokens[idx];
   const src = token.attrGet("src");
   if (src && env?.filePath && !src.startsWith("http://") && !src.startsWith("https://") && !src.startsWith("data:")) {
-    // 只处理 ./ 和 ../ 开头的真正相对路径
-    if (src.startsWith("./") || src.startsWith("../")) {
-      const path = env.filePath as string;
-      // 兼容 Windows 反斜杠路径
-      const sep = path.includes("\\") ? "\\" : "/";
-      const dir = path.substring(0, path.lastIndexOf(sep) + 1);
-      token.attrSet("src", dir + src);
-    }
+    // 将相对路径转为基于文件所在目录的绝对路径，稍后由 MarkdownViewer 转成 data URL
+    const path = env.filePath as string;
+    const normalizedPath = path.replace(/\\/g, "/");
+    const dir = normalizedPath.substring(0, normalizedPath.lastIndexOf("/") + 1);
+    token.attrSet("data-local-src", dir + src);
   }
   return defaultImageRenderer(tokens, idx, options, env, self);
 };
@@ -151,7 +148,7 @@ export function renderMarkdown(raw: string, options?: RenderOptions): string {
   usedHeadingIds.clear();
   const html = md.render(raw, options || {});
   const clean = DOMPurify.sanitize(html, {
-    ADD_ATTR: ["target"],
+    ADD_ATTR: ["target", "data-local-src"],
     USE_PROFILES: { html: true },
   });
   return clean;

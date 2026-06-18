@@ -2,6 +2,7 @@ import { useMemo, useCallback, useRef, useEffect, useState } from "react";
 import { renderMarkdown } from "../services/markdownRenderer";
 import { useSettings } from "../stores/settingsStore.tsx";
 import SearchBar, { useSearch } from "./SearchBar";
+import { invoke } from "@tauri-apps/api/core";
 import "../styles/markdown.css";
 
 type MarkdownViewerProps = {
@@ -74,11 +75,98 @@ function MarkdownViewer({
     }
   }, [fileContent, filePath]);
 
+  // 统计打开文件的次数，用于强制刷新
+  const [fileOpenVersion, setFileOpenVersion] = useState(0);
+  useEffect(() => {
+    setFileOpenVersion((v) => v + 1);
+  }, [filePath]);
+
   const contentWidthMap = {
     narrow: "660px",
     normal: "860px",
     wide: "1060px",
   };
+
+  // 修复本地图片：将本地图片路径转成 base64 data URL
+  useEffect(() => {
+    const container = contentRef.current;
+    if (!container || !filePath) return;
+
+    const images = container.querySelectorAll<HTMLImageElement>("img");
+    images.forEach((img) => {
+      const src = img.getAttribute("src");
+      if (!src) return;
+
+      // 跳过网络图片、data:URL、以及已处理的图片
+      if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("data:")) return;
+
+      // 优先用 data-local-src（markdown 图片语法渲染时设置的完整路径）
+      let localPath = img.getAttribute("data-local-src") || "";
+
+      if (!localPath) {
+        // HTML <img> 标签：根据文件所在目录解析相对路径
+        const normalizedPath = filePath.replace(/\\/g, "/");
+        const dir = normalizedPath.substring(0, normalizedPath.lastIndexOf("/") + 1);
+        localPath = dir + src;
+      }
+
+      invoke<string>("read_image_data", { path: localPath })
+        .then((base64) => {
+          const ext = localPath.split(".").pop()?.toLowerCase();
+          const mimeMap: Record<string, string> = {
+            png: "image/png",
+            jpg: "image/jpeg",
+            jpeg: "image/jpeg",
+            gif: "image/gif",
+            svg: "image/svg+xml",
+            webp: "image/webp",
+            ico: "image/x-icon",
+          };
+          const mime = mimeMap[ext || ""] || "image/png";
+          // 检查是否已被 React 重新渲染覆盖
+          const currentSrc = img.getAttribute("src");
+          if (currentSrc === src || currentSrc?.startsWith("data:")) {
+            img.src = `data:${mime};base64,${base64}`;
+          }
+        })
+        .catch((err) => {
+          console.error(`[MarkLume] 图片加载失败: ${localPath}`, err);
+        });
+    });
+  }, [html, filePath, fileOpenVersion]);
+
+  // 文件变化后的延迟重试（解决 DOM 被覆盖的问题）
+  useEffect(() => {
+    if (!filePath) return;
+    const timer = setTimeout(() => {
+      const container = contentRef.current;
+      if (!container) return;
+      const failedImgs = container.querySelectorAll<HTMLImageElement>(
+        'img:not([src*="data:"]):not([src*="http"])'
+      );
+      if (failedImgs.length > 0) {
+        console.log(`[MarkLume] 发现 ${failedImgs.length} 张未加载图片，重试中`);
+        failedImgs.forEach((img) => {
+          const src = img.getAttribute("src");
+          if (!src) return;
+          let localPath = img.getAttribute("data-local-src") || "";
+          if (!localPath) {
+            const normalizedPath = filePath.replace(/\\/g, "/");
+            const dir = normalizedPath.substring(0, normalizedPath.lastIndexOf("/") + 1);
+            localPath = dir + src;
+          }
+          invoke<string>("read_image_data", { path: localPath })
+            .then((base64) => {
+              const ext = localPath.split(".").pop()?.toLowerCase();
+              const mime = ({ png: "image/png", svg: "image/svg+xml", jpg: "image/jpeg", gif: "image/gif", webp: "image/webp" })[ext || ""] || "image/png";
+              img.src = `data:${mime};base64,${base64}`;
+            })
+            .catch((e) => console.error(`[MarkLume] 重试失败: ${localPath}`, e));
+        });
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [filePath, fileOpenVersion]);
 
   const contentStyle: React.CSSProperties = useMemo(
     () => ({
