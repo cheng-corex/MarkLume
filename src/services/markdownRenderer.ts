@@ -42,7 +42,16 @@ const md = new MarkdownIt({
   },
 });
 
-// 自定义 fence 渲染：代码块包装器 + 复制按钮 + 语言标签
+// 自定义 fence 渲染：代码块包装器 + 复制按钮 + 语言标签 + 行号
+function addLineNumbers(html: string): string {
+  const lines = html.split("\n");
+  // 如果只有一行，不加行号
+  if (lines.length <= 1) return html;
+  return lines
+    .map((line, i) => `<span class="cl"><span class="cln">${i + 1}</span><span class="clc">${line || " "}</span></span>`)
+    .join("\n");
+}
+
 const defaultFenceRenderer = md.renderer.rules.fence;
 
 md.renderer.rules.fence = function (tokens, idx, options, env, self) {
@@ -64,6 +73,8 @@ md.renderer.rules.fence = function (tokens, idx, options, env, self) {
     codeHtml = md.utils.escapeHtml(code);
   }
 
+  const hasLines = code.split("\n").length > 1;
+  const innerHtml = hasLines ? addLineNumbers(codeHtml) : codeHtml;
   const encoded = btoa(encodeURIComponent(code));
 
   const langLabel = lang ? `<span class="code-lang-label">${lang}</span>` : "";
@@ -79,7 +90,7 @@ md.renderer.rules.fence = function (tokens, idx, options, env, self) {
       复制
     </button>
   </div>
-  <pre class="hljs"><code>${codeHtml}</code></pre>
+  <pre class="hljs"><code>${innerHtml}</code></pre>
 </div>`;
 };
 
