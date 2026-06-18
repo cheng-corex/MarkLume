@@ -26,17 +26,35 @@ const md = new MarkdownIt({
   typographer: true,
   breaks: false,
   highlight: (str: string, lang: string): string => {
+    let codeHtml: string;
     if (lang && hljs.getLanguage(lang)) {
       try {
-        return `<pre class="hljs"><code>${hljs.highlight(str, {
+        codeHtml = hljs.highlight(str, {
           language: lang,
           ignoreIllegals: true,
-        }).value}</code></pre>`;
+        }).value;
       } catch {
-        // fallback
+        codeHtml = md.utils.escapeHtml(str);
       }
+    } else {
+      codeHtml = md.utils.escapeHtml(str);
     }
-    return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`;
+
+    const encoded = btoa(encodeURIComponent(str));
+    const langLabel = lang ? `<span class="code-lang-label">${lang}</span>` : "";
+
+    return `<div class="code-block-wrapper">
+  <div class="code-block-header">
+    ${langLabel}
+    <button class="copy-btn" data-code="${encoded}" title="复制代码">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <rect x="4.5" y="4.5" width="10" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+        <path d="M11.5 4.5V3c0-.83-.67-1.5-1.5-1.5H3c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5h1" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+      </svg>
+    </button>
+  </div>
+  <pre class="hljs"><code>${codeHtml}</code></pre>
+</div>`;
   },
 });
 

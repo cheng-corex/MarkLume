@@ -75,7 +75,7 @@
 /* 代码块 (highlight.js) */
 .markdown-content pre {
   margin: 0.75em 0;
-  border-radius: 8px;
+  border-radius: 0 0 8px 8px;
   overflow-x: auto;
   position: relative;
 }
@@ -86,8 +86,62 @@
   font-family: "SF Mono", "Fira Code", "Consolas", "Monaco", monospace;
   font-size: 13px;
   line-height: 1.5;
-  background: #f6f8fa;
+  background: var(--code-bg-block, #f6f8fa);
+  border-radius: 0 0 8px 8px;
+}
+
+/* 代码块包装器 */
+.code-block-wrapper {
+  margin: 0.75em 0;
   border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 12px;
+}
+
+.code-lang-label {
+  color: var(--text-muted);
+  font-family: "SF Mono", "Consolas", monospace;
+  font-size: 11px;
+  text-transform: lowercase;
+}
+
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.copy-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.copy-btn.copied {
+  color: #22c55e;
+}
+
+.code-block-wrapper pre {
+  margin: 0;
+  border-radius: 0;
+  border: none;
 }
 
 /* 行内代码 */
@@ -97,11 +151,6 @@
   padding: 0.2em 0.4em;
   background: var(--code-bg, #f0f0f0);
   border-radius: 3px;
-}
-
-.markdown-content pre code {
-  padding: 1em;
-  background: var(--code-bg-block, #f6f8fa);
 }
 
 /* 表格 */

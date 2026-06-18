@@ -119,8 +119,33 @@ let closestId: string | null = null;
     return () => reader.removeEventListener("scroll", handleScroll);
   }, [fileContent, onActiveHeadingChange]);
 
-  const handleClick = useCallback((e: React.MouseEvent) => {
+  const handleClick = useCallback(async (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
+
+    // 处理复制代码按钮
+    const copyBtn = target.closest(".copy-btn");
+    if (copyBtn) {
+      const encoded = copyBtn.getAttribute("data-code");
+      if (encoded) {
+        try {
+          const code = decodeURIComponent(atob(encoded));
+          await navigator.clipboard.writeText(code);
+          // 临时改变按钮文字提示
+          const btn = copyBtn as HTMLElement;
+          const original = btn.innerHTML;
+          btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>`;
+          btn.classList.add("copied");
+          setTimeout(() => {
+            btn.innerHTML = original;
+            btn.classList.remove("copied");
+          }, 2000);
+        } catch {
+          // 复制失败忽略
+        }
+      }
+      return;
+    }
+
     const link = target.closest("a");
     if (!link) return;
 
