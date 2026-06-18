@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useSettings } from "../stores/settingsStore.tsx";
 import type { TreeNode } from "../services/fileService";
+import ContextMenu from "./ContextMenu";
 
 type SidebarProps = {
   folderTree: TreeNode | null;
@@ -80,9 +81,15 @@ function Sidebar({
   onOpenRecent,
   onOpenFolderFile,
   collapsed,
-  onToggle,
 }: SidebarProps) {
-  const { settings } = useSettings();
+  const { settings, toggleBookmark } = useSettings();
+  const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number; path: string; name: string } | null>(null);
+
+  const handleCtxMenu = useCallback((e: React.MouseEvent, path: string, name: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCtxMenu({ x: e.clientX, y: e.clientY, path, name });
+  }, []);
 
   if (collapsed) {
     return <aside className="sidebar sidebar--collapsed" />;
@@ -145,6 +152,62 @@ function Sidebar({
           </ul>
         )}
       </div>
+
+      <div className="sidebar-section">
+        <div className="sidebar-section-title">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style={{ marginRight: 6, verticalAlign: -1 }}>
+            <path d="M8 1.5l1.76 3.56 3.94.57-2.85 2.78.67 3.93L8 10.75l-3.52 1.85.67-3.93L2.3 5.63l3.94-.57L8 1.5z" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinejoin="round"/>
+          </svg>
+          收藏
+        </div>
+        {settings.bookmarks.length === 0 ? (
+          <div className="sidebar-empty">暂无收藏</div>
+        ) : (
+          <ul className="recent-files-list">
+            {settings.bookmarks.map((b) => (
+              <li
+                key={b.path}
+                className="recent-file-item"
+                title={b.path}
+                onClick={() => onOpenRecent(b.path, b.name)}
+                onContextMenu={(e) => handleCtxMenu(e, b.path, b.name)}
+              >
+                <svg
+                  className="recent-file-icon"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  style={{ color: "var(--accent-color)" }}
+                >
+                  <path d="M8 1.5l1.76 3.56 3.94.57-2.85 2.78.67 3.93L8 10.75l-3.52 1.85.67-3.93L2.3 5.63l3.94-.57L8 1.5z" stroke="currentColor" strokeWidth="1.2" fill="currentColor" strokeLinejoin="round"/>
+                </svg>
+                <span className="recent-file-name">{b.name}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      {ctxMenu && (
+        <ContextMenu
+          x={ctxMenu.x}
+          y={ctxMenu.y}
+          onClose={() => setCtxMenu(null)}
+          items={[
+            {
+              label: "取消收藏",
+              icon: (
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 1.5l1.76 3.56 3.94.57-2.85 2.78.67 3.93L8 10.75l-3.52 1.85.67-3.93L2.3 5.63l3.94-.57L8 1.5z" stroke="currentColor" strokeWidth="1.2" fill="currentColor" strokeLinejoin="round"/>
+                </svg>
+              ),
+              onClick: () => {
+                if (ctxMenu) toggleBookmark(ctxMenu.path, ctxMenu.name);
+              },
+            },
+          ]}
+        />
+      )}
     </aside>
   );
 }

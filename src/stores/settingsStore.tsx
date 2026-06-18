@@ -15,6 +15,12 @@ export type RecentFile = {
   openedAt: number;
 };
 
+export type Bookmark = {
+  path: string;
+  name: string;
+  addedAt: number;
+};
+
 export type MarkdownTheme = "default" | "sepia" | "solarized-light" | "nord" | "dracula";
 
 export type SettingsState = {
@@ -25,6 +31,7 @@ export type SettingsState = {
   markdownTheme: MarkdownTheme;
   contentWidth: "narrow" | "normal" | "wide";
   recentFiles: RecentFile[];
+  bookmarks: Bookmark[];
   lastOpenedFile: string | null;
   lastOpenedFolder: string | null;
   scrollPositions: Record<string, number>;
@@ -32,6 +39,7 @@ export type SettingsState = {
 
 const STORAGE_KEY = "marklume-settings";
 const MAX_RECENT_FILES = 20;
+const MAX_BOOKMARKS = 50;
 
 const DEFAULT_SETTINGS: SettingsState = {
   theme: "system",
@@ -41,6 +49,7 @@ const DEFAULT_SETTINGS: SettingsState = {
   markdownTheme: "default",
   contentWidth: "normal",
   recentFiles: [],
+  bookmarks: [],
   lastOpenedFile: null,
   lastOpenedFolder: null,
   scrollPositions: {},
@@ -52,6 +61,8 @@ type SettingsContextType = {
   addRecentFile: (path: string, name: string) => void;
   saveScrollPosition: (path: string, position: number) => void;
   getScrollPosition: (path: string) => number;
+  toggleBookmark: (path: string, name: string) => void;
+  isBookmarked: (path: string) => boolean;
 };
 
 const SettingsContext = createContext<SettingsContextType | null>(null);
@@ -108,9 +119,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   const addRecentFile = useCallback((path: string, name: string) => {
     setSettings((prev) => {
-      // 去重：如果已存在，删除旧记录
       const filtered = prev.recentFiles.filter((f) => f.path !== path);
-      // 新记录插到最前
       const updated = [
         { path, name, openedAt: Date.now() },
         ...filtered,
@@ -122,6 +131,29 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       };
     });
   }, []);
+
+  const toggleBookmark = useCallback((path: string, name: string) => {
+    setSettings((prev) => {
+      const exists = prev.bookmarks.some((b) => b.path === path);
+      if (exists) {
+        return {
+          ...prev,
+          bookmarks: prev.bookmarks.filter((b) => b.path !== path),
+        };
+      }
+      return {
+        ...prev,
+        bookmarks: [
+          { path, name, addedAt: Date.now() },
+          ...prev.bookmarks,
+        ].slice(0, MAX_BOOKMARKS),
+      };
+    });
+  }, []);
+
+  const isBookmarked = useCallback((path: string): boolean => {
+    return settings.bookmarks.some((b) => b.path === path);
+  }, [settings.bookmarks]);
 
   const saveScrollPosition = useCallback((path: string, position: number) => {
     setSettings((prev) => ({
@@ -140,7 +172,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   return (
     <SettingsContext.Provider
-      value={{ settings, updateSettings, addRecentFile, saveScrollPosition, getScrollPosition }}
+      value={{ settings, updateSettings, addRecentFile, saveScrollPosition, getScrollPosition, toggleBookmark, isBookmarked }}
     >
       {children}
     </SettingsContext.Provider>

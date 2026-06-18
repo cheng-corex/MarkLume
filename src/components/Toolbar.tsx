@@ -3,6 +3,7 @@ import SettingsPanel from "./SettingsPanel";
 
 type ToolbarProps = {
   fileName: string;
+  filePath: string;
   currentFileIndex: number;
   totalFolderFiles: number;
   onOpenFile: () => void;
@@ -15,10 +16,13 @@ type ToolbarProps = {
   onToggleSidebar: () => void;
   onToggleOutline: () => void;
   onToggleImmersive: () => void;
+  isBookmarked: boolean;
+  onToggleBookmark: () => void;
 };
 
 function Toolbar({
   fileName,
+  filePath,
   currentFileIndex,
   totalFolderFiles,
   onOpenFile,
@@ -31,6 +35,8 @@ function Toolbar({
   onToggleSidebar,
   onToggleOutline,
   onToggleImmersive,
+  isBookmarked,
+  onToggleBookmark,
 }: ToolbarProps) {
   const [showSettings, setShowSettings] = useState(false);
 
@@ -62,6 +68,15 @@ function Toolbar({
       <div className="toolbar-center">
         {fileName ? (
           <>
+            <button
+              className={`bookmark-btn ${isBookmarked ? "bookmarked" : ""}`}
+              onClick={onToggleBookmark}
+              title={isBookmarked ? "取消收藏" : "收藏"}
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path d="M8 1.5l1.76 3.56 3.94.57-2.85 2.78.67 3.93L8 10.75l-3.52 1.85.67-3.93L2.3 5.63l3.94-.57L8 1.5z" stroke="currentColor" strokeWidth="1.2" fill={isBookmarked ? "currentColor" : "none"} strokeLinejoin="round"/>
+              </svg>
+            </button>
             <span className="file-name" title={fileName}>
               {fileName}
             </span>

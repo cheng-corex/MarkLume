@@ -22,7 +22,7 @@ function AppInner() {
   const [folderTree, setFolderTree] = useState<TreeNode | null>(null);
   const [showFolderSearch, setShowFolderSearch] = useState(false);
   const [searchFocused, setSearchFocused] = useState(0);
-  const { addRecentFile, updateSettings, settings } = useSettings();
+  const { addRecentFile, updateSettings, settings, toggleBookmark, isBookmarked } = useSettings();
 
   // 从树结构派生平铺文件列表（用于导航和搜索）
   const folderFiles: FolderFile[] = useMemo(() => {
@@ -336,6 +336,8 @@ function AppInner() {
       onActiveHeadingChange={setActiveHeadingId}
       onHeadingClick={handleHeadingClick}
       onSearchFocusAck={handleSearchFocusAck}
+      isBookmarked={file ? isBookmarked(file.path) : false}
+      onToggleBookmark={() => file && toggleBookmark(file.path, file.name)}
     />
     {isDragging && (
       <div className="drag-overlay">
@@ -355,6 +357,16 @@ function AppInner() {
 }
 
 function App() {
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      // 阻止所有默认浏览器右键菜单
+      // 自定义右键菜单由各组件自己的 onContextMenu 控制
+      e.preventDefault();
+    };
+    window.addEventListener("contextmenu", handler);
+    return () => window.removeEventListener("contextmenu", handler);
+  }, []);
+
   return (
     <SettingsProvider>
       <AppInner />

@@ -2,6 +2,7 @@ import { useMemo, useCallback, useRef, useEffect, useState } from "react";
 import { renderMarkdown } from "../services/markdownRenderer";
 import { useSettings } from "../stores/settingsStore.tsx";
 import SearchBar, { useSearch } from "./SearchBar";
+import ContextMenu from "./ContextMenu";
 import { invoke } from "@tauri-apps/api/core";
 import "../styles/markdown.css";
 import "../styles/themes.css";
@@ -297,6 +298,40 @@ function MarkdownViewer({
 
   // Escape 退出沉浸模式
   const [showImmersiveTip, setShowImmersiveTip] = useState(false);
+  const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null);
+  const selectedTextRef = useRef("");
+
+  // 右键菜单：选中文本后显示"复制"
+  const handleContextMenu = useCallback((e: React.MouseEvent) => {
+    const selection = window.getSelection();
+    const selectedText = selection?.toString().trim();
+    if (selectedText) {
+      e.preventDefault();
+      selectedTextRef.current = selectedText;
+      setCtxMenu({ x: e.clientX, y: e.clientY });
+    }
+  }, []);
+
+  const handleCopySelected = useCallback(() => {
+    const text = selectedTextRef.current;
+    if (text) {
+      const el = document.createElement("textarea");
+      el.value = text;
+      el.style.position = "fixed";
+      el.style.left = "-9999px";
+      el.style.top = "-9999px";
+      document.body.appendChild(el);
+      el.focus();
+      el.select();
+      try {
+        document.execCommand("copy");
+      } catch {
+        // 静默
+      }
+      document.body.removeChild(el);
+    }
+    setCtxMenu(null);
+  }, []);
 
   useEffect(() => {
     if (!immersive) return;
@@ -322,7 +357,8 @@ function MarkdownViewer({
 
   if (fileName && fileContent) {
     return (
-      <section className={`reader-area${immersive ? " reader-immersive" : ""}`} ref={readerRef}>
+      <>
+      <section className={`reader-area${immersive ? " reader-immersive" : ""}`} ref={readerRef} onContextMenu={handleContextMenu}>
         {immersive && showImmersiveTip && (
           <div className="immersive-tip">
             按 <kbd>Esc</kbd> 退出沉浸模式
@@ -358,6 +394,26 @@ function MarkdownViewer({
           />
         )}
       </section>
+      {ctxMenu && (
+        <ContextMenu
+          x={ctxMenu.x}
+          y={ctxMenu.y}
+          onClose={() => setCtxMenu(null)}
+          items={[
+            {
+              label: "复制",
+              icon: (
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <rect x="4.5" y="4.5" width="10" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+                  <path d="M11.5 4.5V3c0-.83-.67-1.5-1.5-1.5H3c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5h1" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+                </svg>
+              ),
+              onClick: () => handleCopySelected(),
+            },
+          ]}
+        />
+      )}
+      </>
     );
   }
 

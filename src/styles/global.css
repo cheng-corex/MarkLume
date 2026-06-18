@@ -573,6 +573,36 @@ body {
 	flex-shrink: 0;
 }
 
+/* ===== 收藏按钮 ===== */
+.bookmark-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border: none;
+	border-radius: 4px;
+	background: transparent;
+	color: var(--text-muted);
+	cursor: pointer;
+	transition: color 0.15s, background 0.15s;
+	flex-shrink: 0;
+	margin-right: 4px;
+}
+
+.bookmark-btn:hover {
+	background: var(--bg-hover);
+	color: var(--text-primary);
+}
+
+.bookmark-btn.bookmarked {
+	color: #f59e0b;
+}
+
+.bookmark-btn.bookmarked:hover {
+	color: #d97706;
+}
+
 /* ===== 右键菜单 ===== */
 .context-menu {
 	position: fixed;
