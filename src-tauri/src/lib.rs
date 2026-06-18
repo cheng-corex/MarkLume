@@ -31,6 +31,7 @@ pub fn run() {
             commands::scan_markdown_files,
             commands::scan_folder_tree,
             commands::read_image_data,
+            commands::get_file_modified_time,
             get_initial_file
         ])
         .run(tauri::generate_context!())

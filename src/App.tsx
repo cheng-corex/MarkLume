@@ -151,6 +151,36 @@ function AppInner() {
     };
   }, [addRecentFile]);
 
+  // 文件变更自动检测（轮询 2 秒）
+  useEffect(() => {
+    if (!file?.path) return;
+    let cancelled = false;
+    let lastModTime = file.modifiedAt;
+
+    const checkForChanges = async () => {
+      try {
+        const modTime = await invoke<number>("get_file_modified_time", { path: file.path });
+        if (cancelled) return;
+        if (modTime > lastModTime) {
+          lastModTime = modTime;
+          const content = await readFile(file.path);
+          if (!cancelled) {
+            setFile(content);
+            addRecentFile(file.path, content.name);
+          }
+        }
+      } catch {
+        // 文件可能已被删除等
+      }
+    };
+
+    const timer = setInterval(checkForChanges, 2000);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, [file?.path, addRecentFile]);
+
   // 全局 Ctrl+Shift+F 快捷键
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
