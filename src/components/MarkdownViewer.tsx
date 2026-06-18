@@ -200,15 +200,23 @@ function MarkdownViewer({
   }, []);
 
   // Escape 退出沉浸模式
+  const [showImmersiveTip, setShowImmersiveTip] = useState(false);
+
   useEffect(() => {
     if (!immersive) return;
+    // 进入沉浸模式时显示提示
+    setShowImmersiveTip(true);
+    const timer = setTimeout(() => setShowImmersiveTip(false), 3000);
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape" && onExitImmersive) {
         onExitImmersive();
       }
     };
     window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    return () => {
+      window.removeEventListener("keydown", handler);
+      clearTimeout(timer);
+    };
   }, [immersive, onExitImmersive]);
 
   const handleCloseSearch = useCallback(() => {
@@ -219,14 +227,18 @@ function MarkdownViewer({
   if (fileName && fileContent) {
     return (
       <section className={`reader-area${immersive ? " reader-immersive" : ""}`} ref={readerRef}>
+        {immersive && showImmersiveTip && (
+          <div className="immersive-tip">
+            按 <kbd>Esc</kbd> 退出沉浸模式
+          </div>
+        )}
         {immersive && onExitImmersive && (
           <button className="immersive-exit-btn" onClick={onExitImmersive} title="退出沉浸模式 (Esc)">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <rect x="1.5" y="1.5" width="13" height="13" rx="1.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
-              <path d="M1.5 5.5h13" stroke="currentColor" strokeWidth="1.2"/>
-              <path d="M6 4l-4 4 4 4M14 8H2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+              <path d="M6 10l-4-4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 6h8c1.1 0 2 .9 2 2v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            退出全屏
+            退出
           </button>
         )}
         <div

@@ -414,6 +414,41 @@ body {
 	color: var(--text-primary);
 }
 
+/* 沉浸模式切换提示 */
+.immersive-tip {
+	position: fixed;
+	top: 16px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 100;
+	padding: 8px 20px;
+	background: var(--panel-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	box-shadow: var(--panel-shadow);
+	font-size: 13px;
+	color: var(--text-secondary);
+	animation: immersive-fade 3s ease forwards;
+	pointer-events: none;
+}
+
+.immersive-tip kbd {
+	display: inline-block;
+	padding: 1px 6px;
+	font-family: inherit;
+	font-size: 12px;
+	background: var(--btn-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 3px;
+}
+
+@keyframes immersive-fade {
+	0% { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+	15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+	70% { opacity: 1; }
+	100% { opacity: 0; }
+}
+
 /* 沉浸模式下隐藏滚动条（可选） */
 .reader-immersive::-webkit-scrollbar {
 	width: 6px;
