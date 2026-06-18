@@ -128,12 +128,13 @@ function Toolbar({
         <button
           className="toolbar-btn"
           onClick={onToggleImmersive}
-          title="沉浸式阅读 (Ctrl+I)"
+          title="沉浸式阅读 (Esc)"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <rect x="1.5" y="1.5" width="13" height="13" rx="1.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
             <path d="M1.5 5.5h13" stroke="currentColor" strokeWidth="1.2"/>
           </svg>
+          <span>沉浸</span>
         </button>
         <button
           className="toolbar-btn"
