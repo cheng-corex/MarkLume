@@ -106,6 +106,28 @@ function SettingsPanel({ onClose }: SettingsPanelProps) {
             ))}
           </div>
         </div>
+
+        {/* 字体族 */}
+        <div className="settings-section">
+          <label className="settings-label">字体</label>
+          <div className="theme-options">
+            {[
+              { value: "sans-serif", label: "无衬线" },
+              { value: "serif", label: "衬线" },
+              { value: "monospace", label: "等宽" },
+              { value: "'Microsoft YaHei', sans-serif", label: "微软雅黑" },
+              { value: "'Noto Serif SC', serif", label: "宋体" },
+            ].map((f) => (
+              <button
+                key={f.value}
+                className={`theme-btn ${settings.fontFamily === f.value ? "active" : ""}`}
+                onClick={() => updateSettings({ fontFamily: f.value })}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );

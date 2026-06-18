@@ -19,6 +19,7 @@ export type SettingsState = {
   theme: ThemeMode;
   fontSize: number;
   lineHeight: number;
+  fontFamily: string;
   contentWidth: "narrow" | "normal" | "wide";
   recentFiles: RecentFile[];
   lastOpenedFile: string | null;
@@ -33,6 +34,7 @@ const DEFAULT_SETTINGS: SettingsState = {
   theme: "system",
   fontSize: 15,
   lineHeight: 1.75,
+  fontFamily: "sans-serif",
   contentWidth: "normal",
   recentFiles: [],
   lastOpenedFile: null,

@@ -173,8 +173,15 @@ function MarkdownViewer({
       fontSize: `${settings.fontSize}px`,
       lineHeight: settings.lineHeight,
       maxWidth: contentWidthMap[settings.contentWidth],
+      fontFamily: settings.fontFamily === "sans-serif"
+        ? "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+        : settings.fontFamily === "serif"
+          ? "'Noto Serif SC', 'Source Han Serif SC', Georgia, serif"
+          : settings.fontFamily === "monospace"
+            ? "'SF Mono', 'Fira Code', 'Consolas', monospace"
+            : settings.fontFamily,
     }),
-    [settings.fontSize, settings.lineHeight, settings.contentWidth]
+    [settings.fontSize, settings.lineHeight, settings.contentWidth, settings.fontFamily]
   );
 
   // 恢复阅读位置 + 滚动跟踪当前标题 + 保存阅读位置
