@@ -15,11 +15,14 @@ export type RecentFile = {
   openedAt: number;
 };
 
+export type MarkdownTheme = "default" | "sepia" | "solarized-light" | "nord" | "dracula";
+
 export type SettingsState = {
   theme: ThemeMode;
   fontSize: number;
   lineHeight: number;
   fontFamily: string;
+  markdownTheme: MarkdownTheme;
   contentWidth: "narrow" | "normal" | "wide";
   recentFiles: RecentFile[];
   lastOpenedFile: string | null;
@@ -35,6 +38,7 @@ const DEFAULT_SETTINGS: SettingsState = {
   fontSize: 15,
   lineHeight: 1.75,
   fontFamily: "sans-serif",
+  markdownTheme: "default",
   contentWidth: "normal",
   recentFiles: [],
   lastOpenedFile: null,

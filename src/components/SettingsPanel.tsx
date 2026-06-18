@@ -1,9 +1,25 @@
-import { useSettings, type ThemeMode } from "../stores/settingsStore.tsx";
+import { useSettings, type ThemeMode, type MarkdownTheme } from "../stores/settingsStore.tsx";
 import "../styles/settings-panel.css";
 
 type SettingsPanelProps = {
   onClose: () => void;
 };
+
+const FONT_OPTIONS: { value: string; label: string }[] = [
+  { value: "sans-serif", label: "无衬线" },
+  { value: "serif", label: "衬线" },
+  { value: "monospace", label: "等宽" },
+  { value: "'Microsoft YaHei', sans-serif", label: "微软雅黑" },
+  { value: "'Noto Serif SC', serif", label: "宋体" },
+];
+
+const THEME_OPTIONS: { value: MarkdownTheme; label: string; desc: string }[] = [
+  { value: "default", label: "默认", desc: "GitHub 风格" },
+  { value: "sepia", label: "羊皮纸", desc: "暖色护眼" },
+  { value: "solarized-light", label: "Solarized", desc: "柔和浅色" },
+  { value: "nord", label: "Nord", desc: "冷蓝风格" },
+  { value: "dracula", label: "Dracula", desc: "暗紫风格" },
+];
 
 function SettingsPanel({ onClose }: SettingsPanelProps) {
   const { settings, updateSettings } = useSettings();
@@ -124,6 +140,24 @@ function SettingsPanel({ onClose }: SettingsPanelProps) {
                 onClick={() => updateSettings({ fontFamily: f.value })}
               >
                 {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Markdown 主题 */}
+        <div className="settings-section">
+          <label className="settings-label">Markdown 主题</label>
+          <div className="markdown-theme-options">
+            {THEME_OPTIONS.map((t) => (
+              <button
+                key={t.value}
+                className={`md-theme-btn ${settings.markdownTheme === t.value ? "active" : ""}`}
+                onClick={() => updateSettings({ markdownTheme: t.value })}
+              >
+                <span className={`md-theme-swatch md-theme-swatch-${t.value}`} />
+                <span className="md-theme-btn-label">{t.label}</span>
+                <span className="md-theme-btn-desc">{t.desc}</span>
               </button>
             ))}
           </div>

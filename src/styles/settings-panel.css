@@ -16,7 +16,7 @@
 	border: 1px solid var(--border-color);
 	border-radius: 12px;
 	box-shadow: var(--panel-shadow);
-	width: 320px;
+	width: 380px;
 	max-height: 80vh;
 	overflow-y: auto;
 	z-index: 101;
@@ -139,4 +139,59 @@
 	border: 2px solid var(--panel-bg);
 	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 	cursor: pointer;
+}
+
+/* ===== Markdown 主题选择 ===== */
+.markdown-theme-options {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.md-theme-btn {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 8px 12px;
+	font-size: 13px;
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	background: var(--btn-bg);
+	color: var(--text-primary);
+	cursor: pointer;
+	transition: all 0.15s ease;
+	text-align: left;
+}
+
+.md-theme-btn:hover {
+	background: var(--btn-hover);
+}
+
+.md-theme-btn.active {
+	border-color: var(--accent-color);
+	background: var(--bg-hover);
+}
+
+.md-theme-swatch {
+	width: 28px;
+	height: 22px;
+	border-radius: 4px;
+	border: 1px solid var(--border-color);
+	flex-shrink: 0;
+}
+
+.md-theme-swatch-default { background: linear-gradient(135deg, #f6f8fa, #fff); }
+.md-theme-swatch-sepia { background: linear-gradient(135deg, #f4ecd8, #ede0cf); }
+.md-theme-swatch-solarized-light { background: linear-gradient(135deg, #fdf6e3, #eee8d5); }
+.md-theme-swatch-nord { background: linear-gradient(135deg, #eceff4, #d8dee9); }
+.md-theme-swatch-dracula { background: linear-gradient(135deg, #282a36, #44475a); }
+
+.md-theme-btn-label {
+	font-weight: 500;
+}
+
+.md-theme-btn-desc {
+	font-size: 11px;
+	color: var(--text-muted);
+	margin-left: auto;
 }

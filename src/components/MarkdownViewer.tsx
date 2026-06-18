@@ -4,6 +4,7 @@ import { useSettings } from "../stores/settingsStore.tsx";
 import SearchBar, { useSearch } from "./SearchBar";
 import { invoke } from "@tauri-apps/api/core";
 import "../styles/markdown.css";
+import "../styles/themes.css";
 
 type MarkdownViewerProps = {
   fileName: string;
@@ -337,7 +338,7 @@ function MarkdownViewer({
           </button>
         )}
         <div
-          className="markdown-content"
+          className={`markdown-content md-theme-${settings.markdownTheme}`}
           ref={contentRef}
           style={contentStyle}
           onClick={handleClick}
