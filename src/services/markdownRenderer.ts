@@ -76,6 +76,7 @@ md.renderer.rules.fence = function (tokens, idx, options, env, self) {
         <rect x="4.5" y="4.5" width="10" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
         <path d="M11.5 4.5V3c0-.83-.67-1.5-1.5-1.5H3c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5h1" stroke="currentColor" strokeWidth="1.2" fill="none"/>
       </svg>
+      复制
     </button>
   </div>
   <pre class="hljs"><code>${codeHtml}</code></pre>

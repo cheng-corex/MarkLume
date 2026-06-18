@@ -48,6 +48,7 @@
 	--panel-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 	--code-bg: #3c3c3c;
 	--code-bg-block: #2d2d2d;
+	--code-header-bg: #2a2a2a;
 }
 
 /* 跟随系统暗色主题 */
@@ -70,6 +71,7 @@
 		--panel-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 		--code-bg: #3c3c3c;
 		--code-bg-block: #2d2d2d;
+		--code-header-bg: #2a2a2a;
 	}
 }
 

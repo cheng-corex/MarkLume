@@ -130,10 +130,9 @@ let closestId: string | null = null;
         try {
           const code = decodeURIComponent(atob(encoded));
           await navigator.clipboard.writeText(code);
-          // 临时改变按钮文字提示
           const btn = copyBtn as HTMLElement;
           const original = btn.innerHTML;
-          btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>`;
+          btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6 11.5L13 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg> 已复制`;
           btn.classList.add("copied");
           setTimeout(() => {
             btn.innerHTML = original;
