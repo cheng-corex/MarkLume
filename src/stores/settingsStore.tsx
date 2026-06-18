@@ -23,6 +23,7 @@ export type SettingsState = {
   recentFiles: RecentFile[];
   lastOpenedFile: string | null;
   lastOpenedFolder: string | null;
+  scrollPositions: Record<string, number>;
 };
 
 const STORAGE_KEY = "marklume-settings";
@@ -36,12 +37,15 @@ const DEFAULT_SETTINGS: SettingsState = {
   recentFiles: [],
   lastOpenedFile: null,
   lastOpenedFolder: null,
+  scrollPositions: {},
 };
 
 type SettingsContextType = {
   settings: SettingsState;
   updateSettings: (partial: Partial<SettingsState>) => void;
   addRecentFile: (path: string, name: string) => void;
+  saveScrollPosition: (path: string, position: number) => void;
+  getScrollPosition: (path: string) => number;
 };
 
 const SettingsContext = createContext<SettingsContextType | null>(null);
@@ -113,9 +117,24 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const saveScrollPosition = useCallback((path: string, position: number) => {
+    setSettings((prev) => ({
+      ...prev,
+      scrollPositions: {
+        ...prev.scrollPositions,
+        [path]: position,
+      },
+    }));
+  }, []);
+
+  const getScrollPosition = useCallback((path: string): number => {
+    // 直接从当前 settings 中读取
+    return 0; // 默认值由调用方通过 settings.scrollPositions[path] ?? 0 获取
+  }, []);
+
   return (
     <SettingsContext.Provider
-      value={{ settings, updateSettings, addRecentFile }}
+      value={{ settings, updateSettings, addRecentFile, saveScrollPosition, getScrollPosition }}
     >
       {children}
     </SettingsContext.Provider>

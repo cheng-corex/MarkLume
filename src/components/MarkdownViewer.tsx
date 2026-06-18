@@ -25,7 +25,7 @@ function MarkdownViewer({
 }: MarkdownViewerProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const readerRef = useRef<HTMLElement>(null);
-  const { settings } = useSettings();
+  const { settings, saveScrollPosition } = useSettings();
   const [showSearch, setShowSearch] = useState(false);
   const search = useSearch(fileContent);
 
@@ -85,39 +85,64 @@ function MarkdownViewer({
     [settings.fontSize, settings.lineHeight, settings.contentWidth]
   );
 
-  // 滚动跟踪当前标题
+  // 恢复阅读位置 + 滚动跟踪当前标题 + 保存阅读位置
   useEffect(() => {
     const reader = readerRef.current;
     if (!reader || !fileContent) return;
 
+    // 恢复上次阅读位置（直接从 settings 中读取）
+    if (filePath) {
+      const savedPos = settings.scrollPositions[filePath] ?? 0;
+      if (savedPos > 0) {
+        requestAnimationFrame(() => {
+          reader.scrollTop = savedPos;
+        });
+      }
+    }
+
+    let saveTimer: number | null = null;
+
     const handleScroll = () => {
+      // 标题跟踪
       const headings = reader.querySelectorAll("h1, h2, h3, h4, h5, h6");
       if (headings.length === 0) {
         onActiveHeadingChange(null);
-        return;
+      } else {
+        const scrollTop = reader.scrollTop;
+        let closestId: string | null = null;
+        let closestDist = Infinity;
+        headings.forEach((h) => {
+          const dist = Math.abs(h.getBoundingClientRect().top + reader.scrollTop - scrollTop);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closestId = h.id;
+          }
+        });
+        onActiveHeadingChange(closestId);
       }
 
-      const scrollTop = reader.scrollTop;
-
-let closestId: string | null = null;
-      let closestDist = Infinity;
-
-      headings.forEach((h) => {
-        const dist = Math.abs(h.getBoundingClientRect().top + reader.scrollTop - scrollTop);
-        if (dist < closestDist) {
-          closestDist = dist;
-          closestId = h.id;
-        }
-      });
-
-      onActiveHeadingChange(closestId);
+      // 保存阅读位置（防抖 300ms）
+      if (filePath) {
+        if (saveTimer) clearTimeout(saveTimer);
+        saveTimer = window.setTimeout(() => {
+          saveScrollPosition(filePath, reader.scrollTop);
+        }, 300);
+      }
     };
 
     reader.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
 
-    return () => reader.removeEventListener("scroll", handleScroll);
-  }, [fileContent, onActiveHeadingChange]);
+    return () => {
+      reader.removeEventListener("scroll", handleScroll);
+      if (saveTimer) clearTimeout(saveTimer);
+      // 离开时立即保存一次
+      if (filePath) {
+        saveScrollPosition(filePath, reader.scrollTop);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fileContent, filePath]);
 
   const handleClick = useCallback(async (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
