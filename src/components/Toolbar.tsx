@@ -14,6 +14,7 @@ type ToolbarProps = {
   outlineCollapsed: boolean;
   onToggleSidebar: () => void;
   onToggleOutline: () => void;
+  onToggleImmersive: () => void;
 };
 
 function Toolbar({
@@ -29,6 +30,7 @@ function Toolbar({
   outlineCollapsed,
   onToggleSidebar,
   onToggleOutline,
+  onToggleImmersive,
 }: ToolbarProps) {
   const [showSettings, setShowSettings] = useState(false);
 
@@ -121,6 +123,16 @@ function Toolbar({
             <path d="M1.5 4.5c0-.83.67-1.5 1.5-1.5h3.09l1 1H13c.83 0 1.5.67 1.5 1.5v1H1.5V4.5z" fill="currentColor" opacity="0.3"/>
             <path d="M1.5 6.5v5c0 .83.67 1.5 1.5 1.5h10c.83 0 1.5-.67 1.5-1.5V6H1.5v.5z" stroke="currentColor" strokeWidth="1.2" fill="none"/>
             <path d="M1.5 6V4.5c0-.83.67-1.5 1.5-1.5h3.09l1 1H13c.83 0 1.5.67 1.5 1.5V6" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+          </svg>
+        </button>
+        <button
+          className="toolbar-btn"
+          onClick={onToggleImmersive}
+          title="沉浸式阅读 (Ctrl+I)"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect x="1.5" y="1.5" width="13" height="13" rx="1.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+            <path d="M1.5 5.5h13" stroke="currentColor" strokeWidth="1.2"/>
           </svg>
         </button>
         <button

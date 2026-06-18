@@ -12,6 +12,8 @@ type MarkdownViewerProps = {
   onActiveHeadingChange: (id: string | null) => void;
   searchFocused: number;
   onSearchFocusAck: () => void;
+  immersive?: boolean;
+  onExitImmersive?: () => void;
 };
 
 function MarkdownViewer({
@@ -22,6 +24,8 @@ function MarkdownViewer({
   onActiveHeadingChange,
   searchFocused,
   onSearchFocusAck,
+  immersive,
+  onExitImmersive,
 }: MarkdownViewerProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const readerRef = useRef<HTMLElement>(null);
@@ -195,6 +199,18 @@ function MarkdownViewer({
     }
   }, []);
 
+  // Escape 退出沉浸模式
+  useEffect(() => {
+    if (!immersive) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && onExitImmersive) {
+        onExitImmersive();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [immersive, onExitImmersive]);
+
   const handleCloseSearch = useCallback(() => {
     setShowSearch(false);
     search.setQuery("");
@@ -202,7 +218,17 @@ function MarkdownViewer({
 
   if (fileName && fileContent) {
     return (
-      <section className="reader-area" ref={readerRef}>
+      <section className={`reader-area${immersive ? " reader-immersive" : ""}`} ref={readerRef}>
+        {immersive && onExitImmersive && (
+          <button className="immersive-exit-btn" onClick={onExitImmersive} title="退出沉浸模式 (Esc)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="1.5" y="1.5" width="13" height="13" rx="1.5" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+              <path d="M1.5 5.5h13" stroke="currentColor" strokeWidth="1.2"/>
+              <path d="M6 4l-4 4 4 4M14 8H2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+            </svg>
+            退出全屏
+          </button>
+        )}
         <div
           className="markdown-content"
           ref={contentRef}

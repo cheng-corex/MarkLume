@@ -66,6 +66,7 @@ function AppShell({
 }: AppShellProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [outlineCollapsed, setOutlineCollapsed] = useState(false);
+  const [immersive, setImmersive] = useState(false);
   const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null);
 
   const handleContextMenu = useCallback((e: React.MouseEvent) => {
@@ -73,30 +74,39 @@ function AppShell({
     setCtxMenu({ x: e.clientX, y: e.clientY });
   }, []);
 
+  const handleToggleImmersive = useCallback(() => {
+    setImmersive((v) => !v);
+  }, []);
+
   return (
-    <div className="app-shell">
-      <Toolbar
-        fileName={fileName}
-        currentFileIndex={currentFileIndex}
-        totalFolderFiles={totalFolderFiles}
-        onOpenFile={onOpenFile}
-        onOpenFolder={onOpenFolder}
-        onNavigateFile={onNavigateFile}
-        onSearchFile={onSearchFile}
-        onSearchFolder={onSearchFolder}
-        sidebarCollapsed={sidebarCollapsed}
-        outlineCollapsed={outlineCollapsed}
-        onToggleSidebar={() => setSidebarCollapsed((v) => !v)}
-        onToggleOutline={() => setOutlineCollapsed((v) => !v)}
-      />
-      <div className="main-content" onContextMenu={handleContextMenu}>
-        <Sidebar
-          folderTree={folderTree}
-          currentFilePath={currentFilePath}
-          onOpenRecent={onOpenRecent}
-          onOpenFolderFile={onOpenFolderFile}
-          collapsed={sidebarCollapsed}
+    <div className={`app-shell${immersive ? " immersive" : ""}`}>
+      {!immersive && (
+        <Toolbar
+          fileName={fileName}
+          currentFileIndex={currentFileIndex}
+          totalFolderFiles={totalFolderFiles}
+          onOpenFile={onOpenFile}
+          onOpenFolder={onOpenFolder}
+          onNavigateFile={onNavigateFile}
+          onSearchFile={onSearchFile}
+          onSearchFolder={onSearchFolder}
+          sidebarCollapsed={sidebarCollapsed}
+          outlineCollapsed={outlineCollapsed}
+          onToggleSidebar={() => setSidebarCollapsed((v) => !v)}
+          onToggleOutline={() => setOutlineCollapsed((v) => !v)}
+          onToggleImmersive={handleToggleImmersive}
         />
+      )}
+      <div className="main-content" onContextMenu={handleContextMenu}>
+        {!immersive && (
+          <Sidebar
+            folderTree={folderTree}
+            currentFilePath={currentFilePath}
+            onOpenRecent={onOpenRecent}
+            onOpenFolderFile={onOpenFolderFile}
+            collapsed={sidebarCollapsed}
+          />
+        )}
         <MarkdownViewer
           fileName={fileName}
           fileContent={fileContent}
@@ -105,13 +115,17 @@ function AppShell({
           onActiveHeadingChange={onActiveHeadingChange}
           searchFocused={searchFocused}
           onSearchFocusAck={onSearchFocusAck}
+          immersive={immersive}
+          onExitImmersive={handleToggleImmersive}
         />
-        <OutlinePanel
-          headings={headings}
-          activeHeadingId={activeHeadingId}
-          onHeadingClick={onHeadingClick}
-          collapsed={outlineCollapsed}
-        />
+        {!immersive && (
+          <OutlinePanel
+            headings={headings}
+            activeHeadingId={activeHeadingId}
+            onHeadingClick={onHeadingClick}
+            collapsed={outlineCollapsed}
+          />
+        )}
       </div>
       {showFolderSearch && (
         <FolderSearchPanel
