@@ -137,3 +137,4 @@ export function flattenTree(node: TreeNode): FolderFile[] {
   walk(node, "");
   return files;
 }
+
